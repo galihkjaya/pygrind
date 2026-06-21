@@ -10,6 +10,9 @@ type Level = 'beginner' | 'intermediate' | 'advanced'
 const LEVELS: Level[] = ['beginner', 'intermediate', 'advanced']
 const GOALS = ['Python', 'SQL', 'FastAPI', 'Docker', 'Git', 'Bash', 'ML/AI']
 
+const handbookModules = import.meta.glob('../../handbook/*.html')
+const AVAILABLE_HANDBOOKS = Object.keys(handbookModules).map((path) => path.split('/').pop() || '')
+
 export function BriefPage() {
   const navigate = useNavigate()
   const { apiKey, provider, selectedModel, setCurriculum } = useAppStore()
@@ -38,6 +41,7 @@ export function BriefPage() {
         apiKey,
         provider,
         model: selectedModel,
+        temperature: 0.8, // high temperature for creative tasks
         systemPrompt: buildCurriculumSystemPrompt(),
         userMessage: [
           `Current level: ${level}`,
@@ -167,6 +171,7 @@ export function BriefPage() {
 }
 
 function buildCurriculumSystemPrompt() {
+  const fileList = AVAILABLE_HANDBOOKS.join(', ')
   return `You are an expert curriculum designer for PyGrind, a browser-only coding learning platform for AI/ML and backend engineers.
 
 Return ONLY a valid JSON object. Do not include a preamble. Do not include markdown fences.
@@ -175,23 +180,25 @@ The JSON must match this exact schema:
 {
   "paths": [
     {
-      "id": "python-oop",
-      "title": "Python OOP",
-      "handbookPage": "python-oop.html",
-      "topics": ["classes", "inheritance", "dunder methods"],
+      "id": "unique-path-id",
+      "title": "Path Title",
+      "handbookPage": "exact-filename.html",
+      "topics": ["topic 1", "topic 2", "topic 3"],
       "problems": [
-        { "tier": 1, "title": "Create a class", "prompt": "Write a Python class called Animal..." },
-        { "tier": 2, "title": "Add inheritance", "prompt": "Extend Animal with a Dog class..." },
-        { "tier": 3, "title": "Implement __repr__", "prompt": "Add __repr__ and __eq__ to your class..." }
+        { "tier": 1, "title": "...", "prompt": "..." },
+        { "tier": 2, "title": "...", "prompt": "..." },
+        { "tier": 3, "title": "...", "prompt": "..." }
       ]
     }
   ]
 }
 
-Rules:
-- Create 4 to 6 paths based on the learner brief.
-- Every path must have exactly three problems, with tiers 1, 2, and 3.
-- Use practical Python, SQL, FastAPI, Docker, Git, Bash, and ML/AI tasks.
-- Choose handbookPage filenames that match the path id when possible, such as python-oop.html, sql-joins-relational-thinking.html, fastapi-routing-basics.html, docker-fundamentals.html, git-basics-local-workflow.html, or bash-developer-commands.html.
-- Problem prompts must be specific enough to submit code for review.`
+CRITICAL RULES FOR DYNAMIC GENERATION:
+1. NO HARDCODED REPETITION: You MUST NOT return the same generic examples every time. You MUST dynamically select topics that perfectly match the user's chosen "Goals" and "Current level".
+2. PATHS COUNT: Create exactly 5 to 7 paths based on the learner brief.
+3. PROBLEMS: Every path must have exactly three problems, with tiers 1, 2, and 3. Tier 1 is warm-up, Tier 2 is applied, Tier 3 is complex.
+4. HANDBOOK SELECTION: You MUST pick a "handbookPage" that exists from this exact list of available files:
+[ ${fileList} ]
+Do not invent filenames that are not in this list. Match the handbook page to the path's topic.
+5. PROBLEM PROMPTS: Must be extremely specific, hands-on, and solvable in a code editor. Do not write generic questions, write actual programming assignments.`
 }

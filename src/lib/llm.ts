@@ -9,6 +9,7 @@ export type LLMRequest = LLMInput & {
   apiKey: string
   provider: Provider
   model: string
+  temperature?: number
 }
 
 export type LLMResponse = {
@@ -78,7 +79,7 @@ async function callGroq(input: LLMRequest): Promise<LLMResponse> {
         { role: 'system', content: input.systemPrompt },
         { role: 'user', content: input.userMessage },
       ],
-      temperature: 0.2,
+      temperature: input.temperature ?? 0.2,
     }),
   })
 
@@ -118,7 +119,7 @@ async function callGemini(input: LLMRequest): Promise<LLMResponse> {
           },
         ],
         generationConfig: {
-          temperature: 0.2,
+          temperature: input.temperature ?? 0.2,
         },
       }),
     },
