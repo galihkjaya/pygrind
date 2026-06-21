@@ -42,6 +42,7 @@ export function BriefPage() {
         provider,
         model: selectedModel,
         temperature: 0.8, // high temperature for creative tasks
+        jsonMode: true,
         systemPrompt: buildCurriculumSystemPrompt(),
         userMessage: [
           `Current level: ${level}`,

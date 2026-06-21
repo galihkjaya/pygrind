@@ -10,6 +10,7 @@ export type LLMRequest = LLMInput & {
   provider: Provider
   model: string
   temperature?: number
+  jsonMode?: boolean
 }
 
 export type LLMResponse = {
@@ -80,6 +81,8 @@ async function callGroq(input: LLMRequest): Promise<LLMResponse> {
         { role: 'user', content: input.userMessage },
       ],
       temperature: input.temperature ?? 0.2,
+      max_tokens: 8192,
+      response_format: input.jsonMode ? { type: 'json_object' } : undefined,
     }),
   })
 
@@ -120,6 +123,8 @@ async function callGemini(input: LLMRequest): Promise<LLMResponse> {
         ],
         generationConfig: {
           temperature: input.temperature ?? 0.2,
+          maxOutputTokens: 8192,
+          responseMimeType: input.jsonMode ? 'application/json' : undefined,
         },
       }),
     },
