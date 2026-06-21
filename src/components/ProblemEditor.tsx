@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Trophy } from 'lucide-react'
 import { callLLM } from '../lib/llm'
 import { getCurrentProblem, isTierComplete, isUnlocked } from '../lib/progress'
 import { useAppStore } from '../store/appStore'
@@ -22,6 +22,7 @@ export function ProblemEditor() {
   const currentProblem = path ? getCurrentProblem(path, progress) : null
   const problem = currentProblem
   const tierNumber = problem?.tier || 1
+  const totalTiers = path?.problems.length ?? 0
   
   const [code, setCode] = useState('')
   const [feedback, setFeedback] = useState('')
@@ -98,7 +99,7 @@ export function ProblemEditor() {
   const isPass = feedback.endsWith('PASS')
 
   return (
-    <div className="flex h-screen max-h-[calc(100vh-120px)] w-full flex-col lg:flex-row border-t border-ink-light/20">
+    <div className="flex h-auto min-h-0 w-full flex-col lg:h-[calc(100vh-57px)] lg:flex-row border-t border-ink-light/20">
       {/* Left Panel: Editor & Prompt */}
       <div className="flex w-full flex-col overflow-y-auto lg:w-2/3">
         <div className="flex flex-col gap-6 px-6 py-8">
@@ -111,7 +112,7 @@ export function ProblemEditor() {
               Paths
             </Link>
             <span className="font-mono-dm text-xs uppercase tracking-widest text-ink-light">
-              {language} / Tier {tierNumber}
+              {language} / Tier {tierNumber} of {totalTiers}
             </span>
           </div>
 
@@ -150,7 +151,7 @@ export function ProblemEditor() {
       </div>
 
       {/* Right Panel: AI Review */}
-      <div className="flex h-full w-full flex-col border-l border-ink-light/20 bg-paper lg:w-1/3 overflow-y-auto px-6 py-8">
+      <div className="flex w-full flex-col border-l border-ink-light/20 bg-paper lg:w-1/3 lg:h-full overflow-y-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <span className="font-playfair text-xl font-bold">AI Review</span>
           <Link
@@ -198,7 +199,10 @@ export function ProblemEditor() {
 
           {passedTier && nextProblem && (
             <div className="mt-4 flex flex-col gap-4 border-t border-ink-light/20 pt-4">
-              <p className="font-mono-dm text-sm text-green-600">Tier complete. Ready for the next challenge.</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <p className="font-mono-dm text-sm text-green-600">Tier complete. Ready for the next challenge.</p>
+              </div>
               <button
                 className="btn-primary w-full py-4 font-mono-dm text-sm uppercase tracking-widest flex justify-center items-center gap-2"
                 onClick={() => {
@@ -206,11 +210,31 @@ export function ProblemEditor() {
                   setPassedTier(false)
                   setFeedback('')
                   setCode(getStarterCode(language))
-                  // Update progress to force re-render with next problem
                 }}
                 type="button"
               >
                 Continue to Tier {nextProblem.tier}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {passedTier && !nextProblem && (
+            <div className="mt-4 flex flex-col items-center gap-4 border-t border-ink-light/20 pt-6">
+              <Trophy className="h-10 w-10 text-accent" />
+              <h3 className="font-playfair text-xl font-bold text-center">Path Complete!</h3>
+              <p className="font-mono-dm text-sm text-ink-light text-center">
+                You've conquered all {totalTiers} tiers in this path. Time to tackle the next one.
+              </p>
+              <button
+                className="btn-primary w-full py-4 font-mono-dm text-sm uppercase tracking-widest flex justify-center items-center gap-2"
+                onClick={() => {
+                  completeTier(path.id, problem.tier)
+                  navigate('/learn')
+                }}
+                type="button"
+              >
+                Back to Curriculum
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -229,16 +253,20 @@ function getStarterCode(language: 'python' | 'sql') {
 }
 
 function formatFeedback(text: string) {
+  // Escape HTML entities first to prevent XSS from LLM output
   let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 
-  // 1. Bold: **text**
+  // 1. Code blocks: ```python ... ``` (must be before inline code)
+  html = html.replace(/```[a-z]*\n([\s\S]*?)```/g, '<pre class="bg-ink p-3 my-2 rounded text-paper text-xs overflow-x-auto font-mono-dm"><code>$1</code></pre>')
+
+  // 2. Bold: **text**
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-ink">$1</strong>')
   
-  // 2. Inline code: `code`
+  // 3. Inline code: `code`
   html = html.replace(/`(.*?)`/g, '<code class="bg-ink-light/20 text-accent px-1.5 py-0.5 rounded font-mono-dm text-xs">$1</code>')
-  
-  // 3. Code blocks: ```python ... ```
-  html = html.replace(/```[a-z]*\n([\s\S]*?)```/g, '<pre class="bg-ink p-3 my-2 rounded text-paper text-xs overflow-x-auto font-mono-dm"><code>$1</code></pre>')
   
   // 4. Strip the trailing PASS/NEEDS_WORK since it's displayed in the badge
   html = html.replace(/\s*(PASS|NEEDS_WORK)\s*$/, '').trim()

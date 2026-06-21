@@ -78,6 +78,27 @@
     cursor: not-allowed;
   }
 
+  /* Base input: borderless with a bottom rule — matches the editorial aesthetic */
+  .input-base {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ink-light);
+    outline: none;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--ink);
+    transition: border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .input-base:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  .input-base::placeholder {
+    color: var(--ink-light);
+    opacity: 0.5;
+  }
+
   .handbook-content {
     color: #F2F0ED;
     font-size: 0.95rem;

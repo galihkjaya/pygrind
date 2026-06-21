@@ -82,7 +82,7 @@ function normalizeProgress(value: unknown): ProgressMap {
 
     const normalized = tiers
       .map(Number)
-      .filter((tier): tier is ProblemTier => tier === 1 || tier === 2 || tier === 3)
+      .filter((tier): tier is ProblemTier => Number.isInteger(tier) && tier >= 1)
 
     if (normalized.length > 0) {
       acc[pathId] = Array.from(new Set(normalized)).sort((a, b) => a - b)

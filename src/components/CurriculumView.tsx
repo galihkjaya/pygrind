@@ -77,6 +77,8 @@ function PathRow({ path, index, onOpen }: PathRowProps) {
   const totalCount = path.problems.length
   const tag = path.topics[0] || 'General'
   const indexStr = index.toString().padStart(2, '0')
+  const pct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
+  const isComplete = completedCount === totalCount && totalCount > 0
 
   return (
     <button
@@ -99,10 +101,23 @@ function PathRow({ path, index, onOpen }: PathRowProps) {
       </div>
 
       <div className="flex items-center gap-6 sm:gap-12">
-        <div className="hidden flex-col items-end gap-1 sm:flex">
-          <span className="font-mono-dm text-sm tracking-wide">
-            {completedCount} / {totalCount}
-          </span>
+        <div className="hidden flex-col items-end gap-2 sm:flex">
+          <div className="flex items-center gap-2">
+            {isComplete && (
+              <span className="font-mono-dm text-xs uppercase tracking-wider text-green-600 transition-colors duration-500 group-hover:text-green-400">
+                ✓
+              </span>
+            )}
+            <span className="font-mono-dm text-sm tracking-wide">
+              {completedCount} / {totalCount}
+            </span>
+          </div>
+          <div className="h-1 w-24 overflow-hidden bg-ink-light/20 transition-colors duration-500 group-hover:bg-paper/20">
+            <div
+              className="h-full bg-accent transition-all duration-700 ease-in-out-custom"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
           <span className="font-mono-dm text-[0.6rem] uppercase text-ink-light transition-colors duration-500 group-hover:text-paper/50">
             Tiers Completed
           </span>

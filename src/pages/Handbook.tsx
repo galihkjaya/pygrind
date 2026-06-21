@@ -19,7 +19,7 @@ export function Handbook() {
 
   if (slug) {
     return (
-      <div className="flex h-screen max-h-[calc(100vh-120px)] w-full flex-col lg:flex-row border-t border-ink-light/20">
+      <div className="flex h-auto min-h-0 w-full flex-col lg:h-[calc(100vh-57px)] lg:flex-row border-t border-ink-light/20">
         <div className="flex w-full flex-col lg:w-1/3 border-r border-ink-light/20 p-8 overflow-y-auto">
           <Link
             className="inline-flex items-center gap-2 font-mono-dm text-xs uppercase tracking-widest text-ink-light transition-colors hover:text-ink mb-8"
