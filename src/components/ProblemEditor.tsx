@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Send } from 'lucide-react'
-import type { ProblemTier } from '../lib/curriculum'
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { callLLM } from '../lib/llm'
 import { getCurrentProblem, isTierComplete, isUnlocked } from '../lib/progress'
 import { useAppStore } from '../store/appStore'
@@ -13,74 +12,50 @@ const REVIEW_SYSTEM_PROMPT =
 
 export function ProblemEditor() {
   const navigate = useNavigate()
-  const { pathId, tier } = useParams()
+  const { pathId } = useParams()
   const { apiKey, provider, selectedModel, curriculum, progress, completeTier } = useAppStore()
+  
+  const path = useMemo(
+    () => curriculum?.paths.find((candidate) => candidate.id === pathId),
+    [curriculum, pathId],
+  )
+  
+  const currentProblem = path ? getCurrentProblem(path, progress) : null
+  const problem = currentProblem
+  const tierNumber = problem?.tier || 1
+  
   const [code, setCode] = useState('')
   const [feedback, setFeedback] = useState('')
   const [error, setError] = useState('')
   const [isReviewing, setIsReviewing] = useState(false)
   const [passedTier, setPassedTier] = useState(false)
 
-  const path = useMemo(
-    () => curriculum?.paths.find((candidate) => candidate.id === pathId),
-    [curriculum, pathId],
-  )
-  const tierNumber = Number(tier) as ProblemTier
-  const problem = path?.problems.find((candidate) => candidate.tier === tierNumber)
   const language = path?.id.startsWith('sql') ? 'sql' : 'python'
   const unlocked = path && problem ? isUnlocked(progress, path.id, problem.tier) : false
   const complete = path && problem ? isTierComplete(progress, path.id, problem.tier) : false
   const canSubmit = Boolean(apiKey && provider && selectedModel && problem && unlocked && code.trim())
+  
   const nextProblem = useMemo(() => {
-    if (!path) {
-      return null
-    }
-
+    if (!path || !problem) return null
     const sortedProblems = [...path.problems].sort((a, b) => a.tier - b.tier)
-    return sortedProblems.find((candidate) => candidate.tier > tierNumber) ?? null
-  }, [path, tierNumber])
+    return sortedProblems.find((candidate) => candidate.tier > problem.tier) ?? null
+  }, [path, problem])
 
   useEffect(() => {
     setFeedback('')
     setError('')
     setPassedTier(false)
     setCode(getStarterCode(language))
-  }, [language, pathId, tier])
+  }, [language, pathId, tierNumber])
 
   if (!curriculum || !path || !problem) {
     return (
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-panel">
-        <h2 className="text-lg font-semibold text-slate-950">Problem not found</h2>
-        <p className="mt-1 text-sm text-slate-600">Open a generated curriculum path to continue.</p>
-        <Link
-          className="mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-          to="/learn"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back to paths
+      <div className="flex flex-col items-center justify-center py-20">
+        <h2 className="font-playfair text-2xl font-bold">Problem not found</h2>
+        <Link className="btn-primary mt-8 px-6 py-3 font-mono-dm text-sm uppercase tracking-widest" to="/learn">
+          Back to Paths
         </Link>
-      </section>
-    )
-  }
-
-  if (!unlocked) {
-    const currentProblem = getCurrentProblem(path, progress)
-
-    return (
-      <section className="rounded-lg border border-amber-200 bg-amber-50 p-5">
-        <h2 className="text-lg font-semibold text-amber-950">Tier locked</h2>
-        <p className="mt-1 text-sm font-medium text-amber-800">
-          Complete the previous tier before opening this problem.
-        </p>
-        <button
-          className="mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-amber-700 px-4 text-sm font-semibold text-white transition hover:bg-amber-800"
-          onClick={() => navigate(`/learn/${path.id}/${currentProblem.tier}`)}
-          type="button"
-        >
-          Go to current tier
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </button>
-      </section>
+      </div>
     )
   }
 
@@ -121,142 +96,119 @@ export function ProblemEditor() {
       setIsReviewing(false)
     }
   }
+  
+  const isPass = feedback.endsWith('PASS')
 
   return (
-    <section className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
-      <div className="grid gap-4">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-panel">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex h-screen max-h-[calc(100vh-120px)] w-full flex-col lg:flex-row border-t border-ink-light/20">
+      {/* Left Panel: Editor & Prompt */}
+      <div className="flex w-full flex-col overflow-y-auto lg:w-1/2">
+        <div className="flex flex-col gap-6 px-6 py-8">
+          <div className="flex items-center justify-between">
             <Link
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex items-center gap-2 font-mono-dm text-xs uppercase tracking-widest text-ink-light transition-colors hover:text-ink"
               to="/learn"
             >
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              <ArrowLeft className="h-4 w-4" />
               Paths
             </Link>
-            <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold uppercase tracking-normal text-slate-600">
-              {language}
+            <span className="font-mono-dm text-xs uppercase tracking-widest text-ink-light">
+              {language} / Tier {tierNumber}
             </span>
           </div>
 
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-teal-700">{path.title}</p>
-            <h1 className="mt-1 text-2xl font-semibold text-slate-950">{problem.title}</h1>
-            <p className="mt-3 whitespace-pre-line text-sm leading-6 text-slate-700">
+          <div>
+            <span className="font-mono-dm text-sm uppercase tracking-widest text-ink-light">{path.title}</span>
+            <h1 className="mt-2 font-playfair text-3xl font-bold">{problem.title}</h1>
+            <p className="mt-4 whitespace-pre-line font-sans text-sm leading-relaxed text-ink/80">
               {problem.prompt}
             </p>
           </div>
+        </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {path.problems.map((candidate) => (
-              <span
-                className={`rounded-md border px-2 py-1 text-xs font-semibold ${
-                  candidate.tier === problem.tier
-                    ? 'border-slate-950 bg-slate-950 text-white'
-                    : isTierComplete(progress, path.id, candidate.tier)
-                      ? 'border-teal-600 bg-teal-50 text-teal-800'
-                      : 'border-slate-200 bg-slate-50 text-slate-500'
-                }`}
-                key={candidate.tier}
-              >
-                Tier {candidate.tier}
-              </span>
-            ))}
+        <div className="flex flex-1 flex-col border-y border-ink-light/20 bg-ink">
+          <div className="flex items-center justify-between border-b border-ink-light/20 px-4 py-2">
+            <span className="font-mono-dm text-xs uppercase tracking-widest text-paper/70">Workspace</span>
+            <span className="font-mono-dm text-xs text-paper/50">{selectedModel || 'No model'}</span>
+          </div>
+          <div className="flex-1">
+            <Editor
+              height="400px"
+              language={language}
+              onChange={(value) => setCode(value ?? '')}
+              options={{
+                fontSize: 14,
+                fontFamily: '"DM Mono", monospace',
+                minimap: { enabled: false },
+                padding: { top: 16 },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+              }}
+              theme="vs-dark"
+              value={code}
+            />
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-950 shadow-panel">
-          <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
-            <h2 className="text-sm font-semibold text-white">Solution editor</h2>
-            <span className="text-xs font-medium text-slate-400">{selectedModel || 'No model saved'}</span>
-          </div>
-          <Editor
-            height="460px"
-            language={language}
-            onChange={(value) => setCode(value ?? '')}
-            options={{
-              fontSize: 14,
-              minimap: { enabled: false },
-              padding: { top: 16 },
-              scrollBeyondLastLine: false,
-              wordWrap: 'on',
-            }}
-            theme="vs-dark"
-            value={code}
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-4 px-6 py-6">
           <button
-            className="inline-flex h-11 items-center gap-2 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="btn-primary w-full py-4 font-mono-dm text-sm uppercase tracking-widest disabled:cursor-not-allowed disabled:opacity-50 flex justify-center items-center gap-2"
             disabled={!canSubmit || isReviewing}
             onClick={handleSubmit}
             type="button"
           >
-            {isReviewing ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <Send className="h-4 w-4" aria-hidden="true" />
-            )}
-            {isReviewing ? 'Reviewing' : complete ? 'Review again' : 'Submit for review'}
+            {isReviewing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {isReviewing ? 'Reviewing...' : complete ? 'Review Again' : 'Submit Code'}
           </button>
+          
           {!apiKey || !provider || !selectedModel ? (
-            <p className="text-sm font-medium text-amber-700">Save an API key and model first.</p>
+            <p className="text-center font-mono-dm text-xs text-accent">Save an API key and model first.</p>
           ) : null}
-        </div>
 
-        {passedTier ? (
-          <div className="rounded-lg border border-teal-200 bg-teal-50 p-4 text-teal-950">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 text-teal-700" aria-hidden="true" />
-              <div>
-                <h2 className="font-semibold">Tier complete</h2>
-                <p className="mt-1 text-sm leading-6">
-                  Nice work. The next tier is unlocked for this path.
-                </p>
-                {nextProblem ? (
-                  <button
-                    className="mt-3 inline-flex h-10 items-center gap-2 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
-                    onClick={() => navigate(`/learn/${path.id}/${nextProblem.tier}`)}
-                    type="button"
-                  >
-                    Continue
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <Link
-                    className="mt-3 inline-flex h-10 items-center gap-2 rounded-md bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
-                    to="/learn"
-                  >
-                    Back to paths
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </Link>
-                )}
+          {error ? (
+            <div className="mt-2 font-mono-dm text-sm text-accent">
+              {error}
+            </div>
+          ) : null}
+
+          {feedback ? (
+            <div className="mt-4 flex flex-col gap-3 border-t border-ink-light/20 pt-4">
+              <span className="font-mono-dm text-xs uppercase tracking-widest text-ink-light">AI Feedback</span>
+              <pre className="whitespace-pre-wrap font-mono-dm text-sm leading-relaxed text-ink/80">
+                {feedback}
+              </pre>
+              <div className={`mt-2 font-mono-dm text-sm font-bold uppercase tracking-widest ${isPass ? 'text-green-600' : 'text-accent'}`}>
+                {isPass ? 'PASS' : 'NEEDS_WORK'}
               </div>
             </div>
-          </div>
-        ) : null}
+          ) : null}
 
-        {feedback ? (
-          <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-panel">
-            <h2 className="text-sm font-semibold text-slate-950">Review feedback</h2>
-            <pre className="mt-3 whitespace-pre-wrap rounded-md bg-slate-100 p-3 font-sans text-sm leading-6 text-slate-800">
-              {feedback}
-            </pre>
-          </div>
-        ) : null}
-
-        {error ? (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-700">
-            {error}
-          </div>
-        ) : null}
+          {passedTier && nextProblem && (
+            <div className="mt-4 flex flex-col gap-4 border-t border-ink-light/20 pt-4">
+              <p className="font-mono-dm text-sm text-green-600">Tier complete. Ready for the next challenge.</p>
+              <button
+                className="btn-primary w-full py-4 font-mono-dm text-sm uppercase tracking-widest flex justify-center items-center gap-2"
+                onClick={() => {
+                  setPassedTier(false)
+                  setFeedback('')
+                  setCode(getStarterCode(language))
+                  // Update progress to force re-render with next problem
+                }}
+                type="button"
+              >
+                Continue to Tier {nextProblem.tier}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="min-h-[620px]">
+      {/* Right Panel: Handbook */}
+      <div className="flex h-full w-full flex-col border-l border-ink-light/20 bg-ink lg:w-1/2 overflow-y-auto">
         <HandbookViewer slug={path.handbookPage} />
       </div>
-    </section>
+    </div>
   )
 }
 
@@ -264,6 +216,6 @@ function getStarterCode(language: 'python' | 'sql') {
   if (language === 'sql') {
     return '-- Write your SQL solution here\n'
   }
-
   return '# Write your Python solution here\n'
 }
+
