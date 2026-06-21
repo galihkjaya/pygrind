@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOP: Classes, Inheritance, Dunder Methods &amp; Decorators - Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; border: 0; padding: 0; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 280px; max-width: 960px; padding: 48px 52px 88px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 750; color: #f1f5f9; margin-bottom: 8px; line-height: 1.2; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; text-transform: uppercase; letter-spacing: .5px; }
+  h2 { font-size: 22px; font-weight: 650; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 650; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  .concept-box p:last-child, .callout p:last-child { margin-bottom: 0; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code, td code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { color: #7c85b3; font-size: 13px; }
+  .file { color:#86efac; }
+  @media (max-width: 850px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 2 · Intermediate</span>
+    <h2>Python Handbook</h2>
+  </div>
+  <nav><a href="python-oop.html" class="active">9. OOP</a><a href="python-generators-iterators-context-managers.html">10. Generators, Iterators & Context Managers</a><a href="python-functional-tools.html">11. Functional Tools</a><a href="python-standard-library.html">12. Standard Library</a><a href="python-type-hints-dataclasses.html">13. Type Hints & Dataclasses</a><a href="python-asyncio-async-await.html">14. Async Python</a><a href="python-testing-debugging.html">15. Testing & Debugging</a><a href="python-packaging-project-structure.html">16. Packaging & Project Structure</a></nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 2 - Intermediate Python › <span>OOP: Classes, Inheritance, Dunder Methods &amp; Decorators</span></div>
+  <h1>OOP: Classes, Inheritance, Dunder Methods &amp; Decorators</h1>
+  <p class="subtitle">Build Python objects that are readable, reusable, testable, and not over-engineered.</p>
+  <div class="tier-badge">Supports Tier 2 · Tier 3 Problems</div>
+  <div class="section-nav"><a href="#mental-model">Mental model</a><a href="#classes">Classes</a><a href="#properties">Properties</a><a href="#inheritance">Inheritance</a><a href="#dunder">Dunder</a><a href="#decorators">Decorators</a><a href="#design">Design</a></div>
+  <h2 id="mental-model">1. Mental Model: Objects Bundle State and Behavior</h2><p>Object-oriented programming is a way to model a program as cooperating objects. An object usually has <strong>state</strong>, meaning data it remembers, and <strong>behavior</strong>, meaning methods it can perform. A class is the blueprint. An instance is one actual object created from that blueprint.</p><table><tr><th>Term</th><th>Meaning</th><th>Example</th></tr><tr><td>Class</td><td>Blueprint for objects</td><td><code>class User:</code></td></tr><tr><td>Instance</td><td>One real object</td><td><code>user = User()</code></td></tr><tr><td>Attribute</td><td>Data attached to an object</td><td><code>user.name</code></td></tr><tr><td>Method</td><td>Function attached to an object</td><td><code>user.login()</code></td></tr><tr><td>Dunder method</td><td>Special method Python calls automatically</td><td><code>__init__</code>, <code>__repr__</code></td></tr></table><div class="callout info"><strong>When OOP is useful</strong><p>Use OOP when data and behavior naturally belong together. A <code>BankAccount</code> should know its balance and how to deposit. A <code>Tokenizer</code> should know its vocabulary and how to encode text.</p></div><pre><code>class User:
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+        self.is_active = True
+
+    def deactivate(self):
+        self.is_active = False
+
+    def describe(self):
+        return f&quot;{self.username} &lt;{self.email}&gt;&quot;
+
+user = User(&quot;galih&quot;, &quot;galih@example.com&quot;)
+print(user.describe())
+user.deactivate()
+print(user.is_active)</code></pre><h2 id="classes">2. Classes, __init__, and self</h2><p><code>__init__</code> runs when a new object is created. <code>self</code> refers to the current instance. Without <code>self</code>, your method only has temporary local variables and the object cannot remember anything after the method ends.</p><pre><code>class CourseProgress:
+    def __init__(self, course_name):
+        self.course_name = course_name
+        self.completed_lessons = []
+
+    def mark_complete(self, lesson):
+        self.completed_lessons.append(lesson)
+
+    def completion_count(self):
+        return len(self.completed_lessons)
+
+progress = CourseProgress(&quot;Intermediate Python&quot;)
+progress.mark_complete(&quot;OOP&quot;)
+progress.mark_complete(&quot;Generators&quot;)
+print(progress.completion_count())</code></pre><div class="concept-box"><h3>Instance attributes vs class attributes</h3><p>Instance attributes belong to one object. Class attributes are shared by the class. Use class attributes for constants or shared configuration, not per-user mutable state.</p></div><pre><code>class Student:
+    school = &quot;Python Academy&quot;     # class attribute
+
+    def __init__(self, name):
+        self.name = name           # instance attribute
+
+s1 = Student(&quot;Alya&quot;)
+s2 = Student(&quot;Bima&quot;)
+print(s1.school, s2.school)
+print(s1.name, s2.name)</code></pre><div class="callout danger"><strong>Mutable class attribute trap</strong><p>Do not put mutable per-instance data like <code>[]</code> or <code>{}</code> as a class attribute. Every object will share the same list. That bug is sneaky, like group project chaos in object form.</p></div><pre><code># Bad: every cart shares one list
+class BadCart:
+    items = []
+
+    def add(self, item):
+        self.items.append(item)
+
+# Good: every cart gets its own list
+class Cart:
+    def __init__(self):
+        self.items = []
+
+    def add(self, item):
+        self.items.append(item)</code></pre><h2 id="properties">3. Encapsulation and Properties</h2><p>Encapsulation means controlling how state is accessed and changed. Python uses conventions instead of strict private fields. A leading underscore, like <code>_celsius</code>, means internal use. A <code>@property</code> lets callers use attribute syntax while your class still validates or computes values.</p><pre><code>class Temperature:
+    def __init__(self, celsius):
+        self.celsius = celsius
+
+    @property
+    def celsius(self):
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value):
+        if value &lt; -273.15:
+            raise ValueError(&quot;Temperature cannot be below absolute zero&quot;)
+        self._celsius = value
+
+    @property
+    def fahrenheit(self):
+        return self._celsius * 9 / 5 + 32
+
+temp = Temperature(25)
+print(temp.fahrenheit)
+temp.celsius = 30
+print(temp.fahrenheit)</code></pre><h2 id="inheritance">4. Inheritance, super(), and Composition</h2><p>Inheritance lets one class reuse and specialize another class. Use it when the relationship is truly “is a”. A <code>PaidUser</code> is a <code>User</code>. For “has a” relationships, prefer composition. A <code>Course</code> has lessons. A <code>Trainer</code> has a logger.</p><pre><code>class User:
+    def __init__(self, username):
+        self.username = username
+
+    def can_access(self, feature):
+        return feature == &quot;free&quot;
+
+class PaidUser(User):
+    def __init__(self, username, plan):
+        super().__init__(username)
+        self.plan = plan
+
+    def can_access(self, feature):
+        return feature in {&quot;free&quot;, &quot;premium&quot;}
+
+user = PaidUser(&quot;galih&quot;, &quot;pro&quot;)
+print(user.username)
+print(user.can_access(&quot;premium&quot;))</code></pre><pre><code># Composition example
+class EmailSender:
+    def send(self, to, subject):
+        print(f&quot;Sending {subject} to {to}&quot;)
+
+class NotificationService:
+    def __init__(self, sender):
+        self.sender = sender
+
+    def welcome(self, email):
+        self.sender.send(email, &quot;Welcome!&quot;)
+
+service = NotificationService(EmailSender())
+service.welcome(&quot;student@example.com&quot;)</code></pre><h2 id="dunder">5. Dunder Methods: Make Objects Feel Native</h2><p>Dunder methods are special methods surrounded by double underscores. Python calls them automatically for built-in operations. You do not call <code>obj.__len__()</code> directly in normal code. You call <code>len(obj)</code>, and Python routes it to <code>__len__</code>.</p><table><tr><th>Dunder</th><th>Called by</th><th>Purpose</th></tr><tr><td><code>__repr__</code></td><td><code>repr(obj)</code></td><td>Developer-friendly representation</td></tr><tr><td><code>__str__</code></td><td><code>str(obj)</code></td><td>User-friendly representation</td></tr><tr><td><code>__len__</code></td><td><code>len(obj)</code></td><td>Object length</td></tr><tr><td><code>__eq__</code></td><td><code>obj1 == obj2</code></td><td>Equality behavior</td></tr><tr><td><code>__getitem__</code></td><td><code>obj[key]</code></td><td>Indexing or lookup</td></tr></table><pre><code>class Playlist:
+    def __init__(self, name, songs):
+        self.name = name
+        self.songs = list(songs)
+
+    def __len__(self):
+        return len(self.songs)
+
+    def __getitem__(self, index):
+        return self.songs[index]
+
+    def __repr__(self):
+        return f&quot;Playlist(name={self.name!r}, songs={len(self)} songs)&quot;
+
+playlist = Playlist(&quot;Focus&quot;, [&quot;lofi&quot;, &quot;ambient&quot;, &quot;jazz&quot;])
+print(len(playlist))
+print(playlist[0])
+print(playlist)</code></pre><h2 id="decorators">6. OOP Decorators: @classmethod, @staticmethod, @property</h2><p>Decorators change how methods behave. In classes, the three you will see often are <code>@property</code>, <code>@classmethod</code>, and <code>@staticmethod</code>. They look similar but have different jobs.</p><table><tr><th>Decorator</th><th>First parameter</th><th>Use it for</th></tr><tr><td><code>@property</code></td><td><code>self</code></td><td>Computed attribute or validated attribute access</td></tr><tr><td><code>@classmethod</code></td><td><code>cls</code></td><td>Alternative constructors and class-level factories</td></tr><tr><td><code>@staticmethod</code></td><td>None automatically</td><td>Helper function logically grouped inside class</td></tr></table><pre><code>class User:
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    @classmethod
+    def from_email(cls, email):
+        username = email.split(&quot;@&quot;)[0]
+        return cls(username=username, email=email)
+
+    @staticmethod
+    def is_valid_email(email):
+        return &quot;@&quot; in email and &quot;.&quot; in email
+
+user = User.from_email(&quot;galih@example.com&quot;)
+print(user.username)
+print(User.is_valid_email(&quot;bad-email&quot;))</code></pre><h2 id="design">7. Designing Good Classes</h2><ul><li>A class should have one clear responsibility. If it does five unrelated jobs, split it.</li><li>Keep method names as verbs: <code>save</code>, <code>predict</code>, <code>validate</code>, <code>transform</code>.</li><li>Keep attribute names as nouns: <code>name</code>, <code>items</code>, <code>model_path</code>.</li><li>Use composition for flexible systems. Inject dependencies like loggers, clients, and model objects.</li><li>Do not over-OOP tiny scripts. Sometimes a function is cleaner. Not every variable needs a throne.</li></ul><div class="concept-box"><h3>Mini project idea</h3><p>Build a <code>Task</code> class and a <code>TaskList</code> class. Support adding tasks, marking tasks done, filtering unfinished tasks, and saving a readable summary. Use <code>__repr__</code>, <code>__len__</code>, and at least one <code>@property</code>.</p></div><div class="quiz"><h3>Check Your Understanding</h3><ol><li>What is the difference between a class and an instance?</li><li>Why does every instance method usually need <code>self</code>?</li><li>When should you choose composition over inheritance?</li><li>What does <code>__repr__</code> help with during debugging?</li><li>When would <code>@classmethod</code> be better than a normal method?</li></ol></div>
+</div>
+</body>
+</html>

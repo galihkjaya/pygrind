@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing &amp; Debugging: pytest, Mocking &amp; Profiling - Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; border: 0; padding: 0; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 280px; max-width: 960px; padding: 48px 52px 88px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 750; color: #f1f5f9; margin-bottom: 8px; line-height: 1.2; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; text-transform: uppercase; letter-spacing: .5px; }
+  h2 { font-size: 22px; font-weight: 650; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 650; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  .concept-box p:last-child, .callout p:last-child { margin-bottom: 0; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code, td code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { color: #7c85b3; font-size: 13px; }
+  .file { color:#86efac; }
+  @media (max-width: 850px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 2 · Intermediate</span>
+    <h2>Python Handbook</h2>
+  </div>
+  <nav><a href="python-oop.html">9. OOP</a><a href="python-generators-iterators-context-managers.html">10. Generators, Iterators & Context Managers</a><a href="python-functional-tools.html">11. Functional Tools</a><a href="python-standard-library.html">12. Standard Library</a><a href="python-type-hints-dataclasses.html">13. Type Hints & Dataclasses</a><a href="python-asyncio-async-await.html">14. Async Python</a><a href="python-testing-debugging.html" class="active">15. Testing & Debugging</a><a href="python-packaging-project-structure.html">16. Packaging & Project Structure</a></nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 2 - Intermediate Python › <span>Testing &amp; Debugging: pytest, Mocking &amp; Profiling</span></div>
+  <h1>Testing &amp; Debugging: pytest, Mocking &amp; Profiling</h1>
+  <p class="subtitle">Build confidence with tests, isolate bugs with evidence, and measure performance before optimizing.</p>
+  <div class="tier-badge">Supports Tier 3 Problems</div>
+  <div class="section-nav"><a href="#mental-model">Mental model</a><a href="#pytest">pytest</a><a href="#arrange-act-assert">AAA</a><a href="#parametrize">Parametrize</a><a href="#fixtures">Fixtures</a><a href="#mocking">Mocking</a><a href="#debugging">Debugging</a><a href="#logging">Logging</a><a href="#profiling">Profiling</a><a href="#test-design">What to test</a><a href="#mistakes">Mistakes</a></div>
+  <h2 id="mental-model">1. Mental Model: Tests Are Executable Confidence</h2><p>Testing is not only about proving code is correct. It is about making future changes safer. A good test suite lets you refactor without sweating like the production server is watching you. Debugging is the skill of finding the mismatch between what you thought the code did and what it actually did.</p><table><tr><th>Tool</th><th>Use for</th></tr><tr><td><code>pytest</code></td><td>Writing and running tests</td></tr><tr><td>Fixtures</td><td>Reusable test setup</td></tr><tr><td>Mocking</td><td>Replacing external dependencies</td></tr><tr><td><code>pdb</code></td><td>Interactive debugging</td></tr><tr><td>Profiling</td><td>Finding slow parts of code</td></tr></table><h2 id="pytest">2. pytest Basics</h2><p>Pytest discovers files named <code>test_*.py</code> or <code>*_test.py</code>, then runs functions named <code>test_*</code>. Use simple <code>assert</code> statements. Keep tests small and specific.</p><pre><code># file: calculator.py
+def add(a, b):
+    return a + b
+
+def divide(a, b):
+    if b == 0:
+        raise ValueError(&quot;b cannot be zero&quot;)
+    return a / b</code></pre><pre><code># file: test_calculator.py
+import pytest
+from calculator import add, divide
+
+def test_add_two_numbers():
+    assert add(2, 3) == 5
+
+def test_divide_by_zero_raises_error():
+    with pytest.raises(ValueError):
+        divide(10, 0)</code></pre><h2 id="arrange-act-assert">3. Arrange, Act, Assert</h2><p>A readable test usually has three parts: arrange the input, act by calling the function, assert the expected behavior. This structure prevents test spaghetti.</p><pre><code>def normalize_name(name):
+    return &quot; &quot;.join(name.strip().title().split())
+
+def test_normalize_name_removes_extra_spaces():
+    # Arrange
+    raw_name = &quot;  galih   wijaya  &quot;
+
+    # Act
+    result = normalize_name(raw_name)
+
+    # Assert
+    assert result == &quot;Galih Wijaya&quot;</code></pre><h2 id="parametrize">4. Parametrized Tests</h2><p>When the same logic should pass for many cases, use <code>@pytest.mark.parametrize</code>. It keeps tests compact without hiding the cases.</p><pre><code>import pytest
+
+@pytest.mark.parametrize(
+    &quot;score, expected&quot;,
+    [
+        (90, &quot;A&quot;),
+        (80, &quot;B&quot;),
+        (70, &quot;C&quot;),
+    ],
+)
+def test_grade(score, expected):
+    assert grade(score) == expected</code></pre><h2 id="fixtures">5. Fixtures: Reusable Setup</h2><p>Fixtures provide reusable setup for tests. They are great for temporary files, sample data, test clients, and initialized objects.</p><pre><code>import pytest
+
+@pytest.fixture
+def sample_user():
+    return {&quot;name&quot;: &quot;Alya&quot;, &quot;role&quot;: &quot;admin&quot;}
+
+def test_user_has_role(sample_user):
+    assert sample_user[&quot;role&quot;] == &quot;admin&quot;</code></pre><h3>tmp_path fixture</h3><pre><code>def test_write_report(tmp_path):
+    report_path = tmp_path / &quot;report.txt&quot;
+    report_path.write_text(&quot;hello&quot;, encoding=&quot;utf-8&quot;)
+
+    assert report_path.read_text(encoding=&quot;utf-8&quot;) == &quot;hello&quot;</code></pre><h2 id="mocking">6. Mocking External Dependencies</h2><p>Mocking replaces slow, flaky, or external dependencies. Use it for APIs, databases, emails, payment gateways, and random/time behavior. Do not mock the thing you are trying to test. That is like grading your own exam with vibes.</p><pre><code>from unittest.mock import Mock
+
+def notify_user(user_id, sender):
+    sender.send(user_id, &quot;Welcome&quot;)
+    return True
+
+def test_notify_user_calls_sender():
+    sender = Mock()
+
+    result = notify_user(123, sender)
+
+    assert result is True
+    sender.send.assert_called_once_with(123, &quot;Welcome&quot;)</code></pre><h2 id="debugging">7. Debugging Techniques</h2><ul><li>Read the traceback from bottom to top to find the exact failing line.</li><li>Print or log the type and value of suspicious variables.</li><li>Reproduce the bug with the smallest input possible.</li><li>Use <code>breakpoint()</code> to inspect state interactively.</li><li>Write a failing test before fixing the bug, then make it pass.</li></ul><pre><code>def calculate_discount(price, rate):
+    breakpoint()  # opens pdb when this line runs
+    return price * rate
+
+calculate_discount(100, 0.2)</code></pre><h2 id="logging">8. Logging During Debugging</h2><p>Use logging when you need persistent, leveled, contextual messages. Use <code>logger.exception()</code> inside exception handlers to keep the traceback.</p><pre><code>import logging
+
+logger = logging.getLogger(__name__)
+
+def parse_int(text):
+    try:
+        return int(text)
+    except ValueError:
+        logger.exception(&quot;Failed to parse integer: %r&quot;, text)
+        raise</code></pre><h2 id="profiling">9. Profiling: Find Slow Code With Evidence</h2><p>Do not optimize based on guesswork. First measure. Use <code>timeit</code> for small snippets and <code>cProfile</code> for whole programs.</p><pre><code>import timeit
+
+elapsed = timeit.timeit(
+    stmt=&quot;sum(range(1000))&quot;,
+    number=10_000,
+)
+print(elapsed)</code></pre><pre><code># Run from terminal:
+# python -m cProfile -s cumulative your_script.py</code></pre><h2 id="test-design">10. What to Test</h2><ul><li>Normal cases: expected everyday input.</li><li>Edge cases: empty input, one item, large input, boundary values.</li><li>Error cases: invalid input, missing files, failed API response.</li><li>Contracts: output type, invariants, important side effects.</li><li>Regression cases: bugs that happened once and must not return.</li></ul><h2 id="mistakes">11. Common Mistakes</h2><ul><li>Testing implementation details instead of behavior.</li><li>Writing one giant test that fails for ten possible reasons.</li><li>Mocking too much until the test no longer resembles reality.</li><li>Ignoring flaky tests instead of fixing the source of nondeterminism.</li><li>Optimizing before profiling.</li></ul><div class="quiz"><h3>Check Your Understanding</h3><ol><li>What makes a good unit test readable?</li><li>Why is <code>pytest.raises</code> useful?</li><li>When should you use a fixture?</li><li>What should you mock and what should you avoid mocking?</li><li>Why should you profile before optimizing?</li></ol></div>
+</div>
+</body>
+</html>

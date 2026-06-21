@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request &amp; Response Models with Pydantic — Handbook</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1117;color:#e2e8f0;line-height:1.7}.sidebar{position:fixed;top:0;left:0;width:300px;height:100vh;background:#1a1d2e;border-right:1px solid #2d3148;overflow-y:auto;padding:24px 0;z-index:100}.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid #2d3148;margin-bottom:16px}.sidebar-logo span{font-size:12px;color:#7c85b3;text-transform:uppercase;letter-spacing:1px}.sidebar-logo h2{color:#a78bfa;font-size:16px;margin-top:4px}.sidebar nav a{display:block;padding:7px 20px;color:#94a3b8;font-size:13px;text-decoration:none;border-left:3px solid transparent;transition:all .2s;line-height:1.45}.sidebar nav a:hover,.sidebar nav a.active{color:#a78bfa;background:#1e2235;border-left-color:#a78bfa}.main{margin-left:300px;max-width:1020px;padding:48px 52px 90px}.breadcrumb{font-size:12px;color:#64748b;margin-bottom:8px}.breadcrumb span{color:#a78bfa}h1{font-size:36px;font-weight:750;color:#f1f5f9;margin-bottom:8px;line-height:1.2}.subtitle{color:#7c85b3;font-size:16px;margin-bottom:38px}.tier-badge{display:inline-block;background:#1e2235;border:1px solid #a78bfa;color:#a78bfa;font-size:11px;padding:2px 10px;border-radius:20px;margin-bottom:32px;text-transform:uppercase;letter-spacing:.5px}h2{font-size:22px;font-weight:650;color:#c4b5fd;margin:48px 0 16px;padding-bottom:8px;border-bottom:1px solid #2d3148}h3{font-size:17px;font-weight:650;color:#e2e8f0;margin:28px 0 12px}p{color:#94a3b8;margin-bottom:16px}.concept-box{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:20px 24px;margin:20px 0}.concept-box h3{margin-top:0;color:#a78bfa}.concept-box p:last-child,.callout p:last-child{margin-bottom:0}pre{background:#0d1117;border:1px solid #2d3148;border-radius:8px;padding:20px;overflow-x:auto;margin:16px 0}code{font-family:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13.5px}pre code{color:#e2e8f0}p code,li code,td code{background:#1e2235;color:#c084fc;padding:2px 6px;border-radius:4px;font-size:13px}ul,ol{color:#94a3b8;padding-left:24px;margin-bottom:16px}li{margin-bottom:6px}.callout{border-radius:8px;padding:16px 20px;margin:20px 0}.callout.info{background:#1e2940;border-left:4px solid #3b82f6}.callout.warn{background:#2a1f10;border-left:4px solid #f59e0b}.callout.danger{background:#2a1010;border-left:4px solid #ef4444}.callout.success{background:#102a1a;border-left:4px solid #22c55e}.callout strong{display:block;margin-bottom:4px}.callout.info strong{color:#60a5fa}.callout.warn strong{color:#f59e0b}.callout.danger strong{color:#ef4444}.callout.success strong{color:#22c55e}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}th{background:#1a1d2e;color:#a78bfa;text-align:left;padding:10px 14px;border:1px solid #2d3148}td{padding:10px 14px;border:1px solid #2d3148;color:#94a3b8;vertical-align:top}tr:hover td{background:#1a1d2e}.quiz{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:24px;margin:32px 0}.quiz h3{color:#fbbf24;margin-top:0}.section-nav{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}.section-nav a{background:#1a1d2e;border:1px solid #2d3148;color:#94a3b8;padding:6px 14px;border-radius:20px;font-size:13px;text-decoration:none;transition:all .2s}.section-nav a:hover{border-color:#a78bfa;color:#a78bfa}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.mini{color:#7c85b3;font-size:13px}@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:24px}.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar"><div class="sidebar-logo"><span>FastAPI &amp; API Design</span><h2>Backend & AI Engineering</h2></div><nav><a href="fastapi-routing-basics.html">1. FastAPI Basics &amp; Routing</a><a href="fastapi-pydantic-models.html" class="active">2. Request &amp; Response Models with Pydantic</a><a href="fastapi-rest-api-design.html">3. REST API Design Fundamentals</a><a href="fastapi-dependency-injection-project-structure.html">4. Dependency Injection &amp; Project Structure</a><a href="fastapi-authentication-authorization.html">5. Authentication &amp; Authorization</a><a href="fastapi-error-handling-middleware-cors.html">6. Error Handling, Middleware &amp; CORS</a><a href="fastapi-background-tasks-websockets.html">7. Background Tasks &amp; WebSockets</a><a href="fastapi-openapi-developer-experience.html">8. OpenAPI Docs &amp; Developer Experience</a><a href="fastapi-testing-httpx.html">9. Testing FastAPI with httpx</a></nav></div>
+<div class="main">
+  <div class="breadcrumb">FastAPI &amp; API Design › <span>Request &amp; Response Models with Pydantic</span></div>
+  <h1>Request &amp; Response Models with Pydantic</h1>
+  <p class="subtitle">Validate request bodies and control response schemas.</p>
+  <div class="tier-badge">API Foundations</div>
+  <div class="section-nav"><a href="#overview">Overview</a><a href="#mental">Mental model</a><a href="#concepts">Concepts</a><a href="#hands-on">Hands-on</a><a href="#workflow">Workflow</a><a href="#mistakes">Mistakes</a><a href="#reference">Quick ref</a><a href="#practice">Practice</a></div>
+  
+    <h2 id="overview">1. Overview</h2>
+    <p>Validate request bodies and control response schemas. This handbook focuses on practical understanding first: what the tool does, why it exists, how to write the syntax, and how to avoid mistakes that usually waste hours.</p><p>Read it like a field guide. You do not need to memorize every command on first pass. You need to understand the shape of the workflow and know which pattern to reach for when a real project asks for it.</p>
+    <h2 id="mental">2. Mental Model</h2>
+    <div class="concept-box"><h3>How to think about this topic</h3><p>The core mental model: every command or construct has an input, a transformation, and an output. Strong engineers do not just copy syntax. They predict what should happen, run the smallest possible check, then scale the pattern carefully.</p></div>
+    <div class="callout info"><strong>Learning target</strong><p>After this page, you should be able to explain the purpose of the topic, write the main syntax from scratch, debug common failure modes, and apply it inside a small backend or AI-engineering project.</p></div>
+    <h2 id="concepts">3. Core Concepts</h2>
+    <table><tr><th>Concept</th><th>Meaning</th><th>Pattern</th></tr><tr><td><code>BaseModel</code></td><td>Schema class</td><td><code>class User(BaseModel)</code></td></tr><tr><td><code>Field type</code></td><td>Validation from annotation</td><td><code>age: int</code></td></tr><tr><td><code>Field</code></td><td>Constraints and docs</td><td><code>Field(gt=0)</code></td></tr><tr><td><code>Optional</code></td><td>May be absent/null</td><td><code>str | None = None</code></td></tr><tr><td><code>response_model</code></td><td>Shape output</td><td><code>@app.get(..., response_model=UserOut)</code></td></tr><tr><td><code>Nested model</code></td><td>Model inside model</td><td><code>lessons: list[LessonOut]</code></td></tr></table>
+    <h2 id="hands-on">4. Hands-on Code</h2>
+    <h3>Request model</h3><p>FastAPI validates incoming JSON automatically.</p><pre><code>from pydantic import BaseModel, Field
+
+class CourseCreate(BaseModel):
+    title: str = Field(min_length=3, max_length=100)
+    level: str
+    estimated_hours: int = Field(gt=0, le=500)
+
+@app.post(&#x27;/courses&#x27;, status_code=201)
+def create_course(payload: CourseCreate):
+    return {&#x27;received&#x27;: payload.model_dump()}</code></pre><h3>Separate input and output</h3><p>Different models prevent accidental data leaks.</p><pre><code>class UserCreate(BaseModel):
+    email: str
+    password: str
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+
+@app.post(&#x27;/users&#x27;, response_model=UserOut)
+def create_user(payload: UserCreate):
+    return {&#x27;id&#x27;: 1, &#x27;email&#x27;: payload.email, &#x27;password_hash&#x27;: &#x27;hidden&#x27;}</code></pre><h3>Nested response</h3><p>Nested schemas document complex response shapes.</p><pre><code>class LessonOut(BaseModel):
+    id: int
+    title: str
+
+class CourseOut(BaseModel):
+    id: int
+    title: str
+    lessons: list[LessonOut]</code></pre>
+    <h2 id="workflow">5. Practical Workflow</h2>
+    <ol><li>Define request and response models before business logic.</li><li>Separate create, update, and output schemas.</li><li>Use Field constraints for validation.</li><li>Use response_model to hide internal fields.</li><li>Add examples for complex payloads.</li><li>Let FastAPI generate docs from schemas.</li></ol>
+    <h2 id="mistakes">6. Common Mistakes</h2>
+    <div class="callout danger"><strong>Avoid these traps</strong><ul><li>Using one model for input/output/internal data.</li><li>Returning password hashes accidentally.</li><li>Accepting arbitrary dicts when shape is known.</li><li>Putting business logic inside schema classes.</li><li>Forgetting optional fields in PATCH models.</li></ul></div>
+    <h2 id="reference">7. Quick Reference</h2>
+    <table><tr><th>Need</th><th>Pattern</th></tr><tr><td>Model</td><td><code>class Item(BaseModel): name: str</code></td></tr><tr><td>Constraint</td><td><code>Field(gt=0, max_length=100)</code></td></tr><tr><td>Optional</td><td><code>str | None = None</code></td></tr><tr><td>List</td><td><code>items: list[Item]</code></td></tr><tr><td>Dump</td><td><code>payload.model_dump()</code></td></tr><tr><td>Response</td><td><code>response_model=ItemOut</code></td></tr></table>
+    <h2 id="practice">8. Practice Drills</h2>
+    <div class="concept-box"><h3>Mini project</h3><p>Create CourseCreate, CourseUpdate, CourseOut, and LessonOut schemas. Ensure output does not expose admin-only fields.</p></div>
+    <div class="quiz"><h3>Check Your Understanding</h3><ol><li>Why separate input and output models?</li><li>What does response_model protect?</li><li>What status code appears for validation errors?</li><li>When should fields be optional?</li></ol></div>
+    
+</div>
+</body>
+</html>

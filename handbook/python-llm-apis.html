@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LLM APIs: OpenAI, Groq, Gemini, Streaming, Function Calling &amp; JSON Mode - Python AI Handbook</title><style>
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1117;color:#e2e8f0;line-height:1.7}.sidebar{position:fixed;top:0;left:0;width:292px;height:100vh;background:#1a1d2e;border-right:1px solid #2d3148;overflow-y:auto;padding:24px 0;z-index:100}.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid #2d3148;margin-bottom:16px}.sidebar-logo span{font-size:12px;color:#7c85b3;text-transform:uppercase;letter-spacing:1px}.sidebar-logo h2{color:#a78bfa;font-size:16px;margin-top:4px;border:0;padding:0}.sidebar nav a{display:block;padding:7px 20px;color:#94a3b8;font-size:13.2px;text-decoration:none;border-left:3px solid transparent;transition:all .2s;line-height:1.45}.sidebar nav a:hover,.sidebar nav a.active{color:#a78bfa;background:#1e2235;border-left-color:#a78bfa}.main{margin-left:292px;max-width:1000px;padding:48px 52px 88px}.breadcrumb{font-size:12px;color:#64748b;margin-bottom:8px}.breadcrumb span{color:#a78bfa}h1{font-size:36px;font-weight:750;color:#f1f5f9;margin-bottom:8px;line-height:1.18}.subtitle{color:#7c85b3;font-size:16px;margin-bottom:40px}.tier-badge{display:inline-block;background:#1e2235;border:1px solid #a78bfa;color:#a78bfa;font-size:11px;padding:2px 10px;border-radius:20px;margin-bottom:32px;text-transform:uppercase;letter-spacing:.5px}h2{font-size:22px;font-weight:650;color:#c4b5fd;margin:48px 0 16px;padding-bottom:8px;border-bottom:1px solid #2d3148}h3{font-size:17px;font-weight:650;color:#e2e8f0;margin:28px 0 12px}p{color:#94a3b8;margin-bottom:16px}.concept-box{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:20px 24px;margin:20px 0}.concept-box h3{margin-top:0;color:#a78bfa}.concept-box p:last-child,.callout p:last-child{margin-bottom:0}pre{background:#0d1117;border:1px solid #2d3148;border-radius:8px;padding:20px;overflow-x:auto;margin:16px 0}code{font-family:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13.5px}pre code{color:#e2e8f0}p code,li code,td code{background:#1e2235;color:#c084fc;padding:2px 6px;border-radius:4px;font-size:13px}ul,ol{color:#94a3b8;padding-left:24px;margin-bottom:16px}li{margin-bottom:6px}.callout{border-radius:8px;padding:16px 20px;margin:20px 0}.callout.info{background:#1e2940;border-left:4px solid #3b82f6}.callout.warn{background:#2a1f10;border-left:4px solid #f59e0b}.callout.danger{background:#2a1010;border-left:4px solid #ef4444}.callout.success{background:#102a1a;border-left:4px solid #22c55e}.callout strong{display:block;margin-bottom:4px}.callout.info strong{color:#60a5fa}.callout.warn strong{color:#f59e0b}.callout.danger strong{color:#ef4444}.callout.success strong{color:#22c55e}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}th{background:#1a1d2e;color:#a78bfa;text-align:left;padding:10px 14px;border:1px solid #2d3148}td{padding:10px 14px;border:1px solid #2d3148;color:#94a3b8;vertical-align:top}tr:hover td{background:#1a1d2e}.quiz{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:24px;margin:32px 0}.quiz h3{color:#fbbf24;margin-top:0}.section-nav{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}.section-nav a{background:#1a1d2e;border:1px solid #2d3148;color:#94a3b8;padding:6px 14px;border-radius:20px;font-size:13px;text-decoration:none;transition:all .2s}.section-nav a:hover{border-color:#a78bfa;color:#a78bfa}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.mini{color:#7c85b3;font-size:13px}.file{color:#86efac}@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:24px}.two-col{grid-template-columns:1fr}}
+</style></head><body><div class="sidebar"><div class="sidebar-logo"><span>Phase 7 · LLMs & Generative AI</span><h2>Python AI Handbook</h2></div><nav><a href="python-how-llms-work.html">36. How LLMs Work</a><a href="python-llm-apis.html" class="active">37. LLM APIs</a><a href="python-rag.html">38. RAG</a><a href="python-agents-agentic-workflows.html">39. Agents & Agentic Workflows</a><a href="python-llm-fine-tuning-evaluation.html">40. Fine-tuning LLMs & Evaluation</a></nav></div><div class="main"><div class="breadcrumb">Phase 7 - LLMs & Generative AI › <span>LLM APIs: OpenAI, Groq, Gemini, Streaming, Function Calling &amp; JSON Mode</span></div><h1>LLM APIs: OpenAI, Groq, Gemini, Streaming, Function Calling &amp; JSON Mode</h1><p class="subtitle">Call models from code and build provider-agnostic AI features.</p><div class="tier-badge">Supports LLM Engineering</div><div class="section-nav"><a href="#overview">Overview</a><a href="#concepts">Concepts</a><a href="#code">Code</a><a href="#workflow">Workflow</a><a href="#mistakes">Mistakes</a><a href="#reference">Quick ref</a><a href="#practice">Practice</a></div><h2 id="overview">1. Overview</h2><p>LLM APIs let applications send prompts and receive model outputs. Production apps usually need streaming for UX, structured outputs for reliability, and tool/function calling for connecting models to real systems.</p><div class="concept-box"><h3>Mental model</h3><p>Treat an LLM provider as an interchangeable adapter. Your app should define one internal request/response shape, then map it to OpenAI, Groq, Gemini, or another provider.</p></div><div class="callout info"><strong>What you should be able to do after this page</strong><p>Understand API keys, chat messages, streaming, JSON/structured output, function calling, provider adapters, retries, rate limits, and client-side security trade-offs.</p></div><h2 id="concepts">2. Core Concepts</h2><table><tr><th>Concept</th><th>Meaning</th><th>Common pattern</th></tr><tr><td><code>API key</code></td><td>Secret credential used to call provider.</td><td><code>Authorization header</code></td></tr><tr><td><code>message</code></td><td>Role-tagged input.</td><td><code>system/user/assistant</code></td></tr><tr><td><code>streaming</code></td><td>Receive tokens incrementally.</td><td><code>for chunk in stream</code></td></tr><tr><td><code>JSON mode</code></td><td>Constrain output to valid JSON.</td><td><code>response_format</code></td></tr><tr><td><code>structured output</code></td><td>Schema-constrained response.</td><td><code>json_schema</code></td></tr><tr><td><code>function calling</code></td><td>Model returns tool name and arguments.</td><td><code>tools=[...]</code></td></tr><tr><td><code>adapter</code></td><td>Provider-specific wrapper.</td><td><code>callLLM(input)</code></td></tr></table><h2 id="code">3. Hands-on Code</h2><h3>Provider-neutral interface</h3><p>Define your app contract first, then write adapters.</p><pre><code>from dataclasses import dataclass
+
+@dataclass
+class LLMRequest:
+    system: str
+    user: str
+    json: bool = False
+
+@dataclass
+class LLMResponse:
+    text: str
+    provider: str
+    model: str
+
+def call_llm(request: LLMRequest, provider: str) -&gt; LLMResponse:
+    if provider == &quot;groq&quot;:
+        return call_groq(request)
+    if provider == &quot;gemini&quot;:
+        return call_gemini(request)
+    if provider == &quot;openai&quot;:
+        return call_openai(request)
+    raise ValueError(f&quot;Unknown provider: {provider}&quot;)</code></pre><h3>Streaming mental model</h3><p>Streaming improves perceived latency by rendering partial output as it arrives.</p><pre><code>def render_stream(chunks):
+    buffer = []
+    for chunk in chunks:
+        token = chunk.get(&quot;text&quot;, &quot;&quot;)
+        buffer.append(token)
+        print(token, end=&quot;&quot;, flush=True)
+    return &quot;&quot;.join(buffer)</code></pre><h3>Tool calling loop</h3><p>The model proposes a tool call; your code executes it; then the result goes back to the model.</p><pre><code>tools = {
+    &quot;get_weather&quot;: lambda city: {&quot;city&quot;: city, &quot;temp_c&quot;: 30},
+}
+
+model_response = {
+    &quot;tool_name&quot;: &quot;get_weather&quot;,
+    &quot;arguments&quot;: {&quot;city&quot;: &quot;Semarang&quot;},
+}
+
+name = model_response[&quot;tool_name&quot;]
+args = model_response[&quot;arguments&quot;]
+tool_result = tools[name](**args)
+print(tool_result)</code></pre><h3>Structured output validation</h3><p>Always validate JSON before trusting it.</p><pre><code>import json
+from pydantic import BaseModel, ValidationError
+
+class Review(BaseModel):
+    score: int
+    feedback: str
+    passed: bool
+
+raw = &#x27;{&quot;score&quot;: 82, &quot;feedback&quot;: &quot;Good structure&quot;, &quot;passed&quot;: true}&#x27;
+try:
+    review = Review.model_validate(json.loads(raw))
+    print(review)
+except (json.JSONDecodeError, ValidationError) as e:
+    print(&quot;Invalid model output&quot;, e)</code></pre><h2 id="workflow">4. Practical Workflow</h2><p>Provider APIs change over time, so isolate provider-specific code and keep your app logic stable.</p><ol><li>Store API keys securely and avoid committing them.</li><li>Create one internal LLMInput/LLMOutput shape.</li><li>Write separate adapters per provider.</li><li>Use streaming for long visible responses.</li><li>Use structured output for UI rendering or grading.</li><li>Validate all JSON and tool arguments.</li><li>Add retries, timeouts, logging, and cost tracking.</li></ol><h2 id="mistakes">5. Common Mistakes</h2><div class="callout danger"><strong>Traps to avoid</strong><ul><li>Hardcoding provider-specific response parsing everywhere.</li><li>Putting secret API keys into public repos.</li><li>Trusting JSON without validation.</li><li>Letting the model execute tools directly instead of your code controlling execution.</li><li>Ignoring rate limits, retries, and cost.</li></ul></div><h2 id="reference">6. Quick Reference</h2><table><tr><th>Need</th><th>Pattern</th></tr><tr><td>Internal shape</td><td><code>{system, user, json}</code></td></tr><tr><td>Streaming</td><td><code>iterate chunks and append text</code></td></tr><tr><td>JSON validation</td><td><code>Pydantic model_validate</code></td></tr><tr><td>Tool call</td><td><code>model chooses name + args; app executes</code></td></tr><tr><td>Timeout</td><td><code>set request timeout</code></td></tr><tr><td>Retry</td><td><code>retry transient 429/5xx</code></td></tr><tr><td>Cost tracking</td><td><code>log input/output tokens</code></td></tr></table><h2 id="practice">7. Practice Drills</h2><div class="concept-box"><h3>Mini project</h3><p>Build a minimal provider adapter with one function <code>call_llm(input, provider)</code>. Add JSON validation for a structured response and a fake streaming renderer.</p></div><div class="quiz"><h3>Check Your Understanding</h3><ol><li>Why use a provider-neutral interface?</li><li>What problem does streaming solve?</li><li>Why validate structured outputs?</li><li>Who should execute tools: the model or your app code?</li><li>What should be logged for cost monitoring?</li></ol></div></div></body></html>

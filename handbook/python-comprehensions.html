@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comprehensions — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { font-size: 13px; color: #7c85b3; }
+  .kbd { font-family: 'JetBrains Mono', monospace; background:#0d1117; border:1px solid #2d3148; padding:2px 6px; border-radius:4px; color:#e2e8f0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html" class="active">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Comprehensions</span></div>
+  <h1>Comprehensions</h1>
+  <p class="subtitle">Write Pythonic transformations with list, dict, set comprehensions, and generator expressions without sacrificing readability.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 · Tier 3 Problems</div>
+
+  <div class="section-nav">
+    <a href="#mental-model">Mental Model</a>
+    <a href="#list-comps">List</a>
+    <a href="#filter-vs-conditional">Filter vs If/Else</a>
+    <a href="#dict-comps">Dict</a>
+    <a href="#set-comps">Set</a>
+    <a href="#generator-expressions">Generators</a>
+    <a href="#nested">Nested</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#readability">Readability</a>
+    <a href="#mistakes">Mistakes</a>
+    <a href="#reference">Reference</a>
+  </div>
+
+  
+  <h2 id="mental-model">1. Mental Model: Build a Collection from an Iterable</h2>
+  <p>A comprehension is a compact way to transform, filter, or construct a collection from another iterable. It is not just “shorter loop syntax”. It is a pattern for saying: “for every item here, produce something new”.</p>
+
+  <div class="concept-box">
+    <h3>The core shape</h3>
+    <pre><code>new_list = [expression for item in iterable if condition]
+
+# Read it like this:
+# 1. for item in iterable
+# 2. if condition is true
+# 3. put expression into the new list</code></pre>
+  </div>
+
+  <div class="callout info">
+    <strong>Use comprehensions when the goal is data construction</strong>
+    If your loop mainly builds a new list, dict, or set, a comprehension may be clearer. If your loop has many side effects, logging, nested decisions, or error handling, a normal loop is usually better.
+  </div>
+
+  <h2 id="list-comps">2. List Comprehensions</h2>
+  <p>A list comprehension creates a new list. It is the most common type and often replaces a loop with <code>append</code>.</p>
+
+  <pre><code>numbers = [1, 2, 3, 4, 5]
+
+# Normal loop
+squares = []
+for n in numbers:
+    squares.append(n * n)
+
+# List comprehension
+squares = [n * n for n in numbers]
+
+print(squares)</code></pre>
+
+  <h3>Transform values</h3>
+  <pre><code>names = [&quot;alya&quot;, &quot;bima&quot;, &quot;citra&quot;]
+capitalized = [name.title() for name in names]
+
+prices = [10000, 25000, 50000]
+prices_with_tax = [price * 1.11 for price in prices]
+
+print(capitalized)
+print(prices_with_tax)</code></pre>
+
+  <h3>Filter values</h3>
+  <pre><code>scores = [45, 80, 72, 90, 30]
+passing_scores = [score for score in scores if score &gt;= 70]
+
+words = [&quot;AI&quot;, &quot;data&quot;, &quot;ML&quot;, &quot;python&quot;, &quot;NLP&quot;]
+short_words = [word for word in words if len(word) &lt;= 3]
+
+print(passing_scores)
+print(short_words)</code></pre>
+
+  <h2 id="filter-vs-conditional">3. Filtering vs Conditional Expressions</h2>
+  <p>This part is a common trap. An <code>if</code> at the end filters items. An <code>if/else</code> before the <code>for</code> chooses what value to produce for every item.</p>
+
+  <div class="two-col">
+    <div class="concept-box">
+      <h3>Filter items</h3>
+      <pre><code># Keep only passing scores
+scores = [40, 75, 90]
+passed = [s for s in scores if s &gt;= 70]</code></pre>
+    </div>
+    <div class="concept-box">
+      <h3>Transform every item conditionally</h3>
+      <pre><code># Label every score
+scores = [40, 75, 90]
+labels = [&quot;pass&quot; if s &gt;= 70 else &quot;fail&quot; for s in scores]</code></pre>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Different question, different syntax</strong>
+    <code>[x for x in items if condition]</code> may return fewer items. <code>[a if condition else b for x in items]</code> returns the same number of items as the input.
+  </div>
+
+  <h2 id="dict-comps">4. Dict Comprehensions</h2>
+  <p>A dict comprehension builds a dictionary. It is useful when you want to map keys to transformed values.</p>
+
+  <pre><code>names = [&quot;Alya&quot;, &quot;Bima&quot;, &quot;Citra&quot;]
+name_lengths = {name: len(name) for name in names}
+
+print(name_lengths)
+
+# Convert list of records into lookup table
+students = [
+    {&quot;id&quot;: 101, &quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88},
+    {&quot;id&quot;: 102, &quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 76},
+]
+
+students_by_id = {student[&quot;id&quot;]: student for student in students}
+print(students_by_id[101])</code></pre>
+
+  <h3>Filtering in dict comprehensions</h3>
+  <pre><code>scores = {
+    &quot;Alya&quot;: 88,
+    &quot;Bima&quot;: 61,
+    &quot;Citra&quot;: 92,
+    &quot;Deni&quot;: 55,
+}
+
+passed = {name: score for name, score in scores.items() if score &gt;= 70}
+print(passed)</code></pre>
+
+  <div class="callout danger">
+    <strong>❌ Duplicate keys overwrite earlier values</strong>
+    If two items produce the same key, the later value wins. This is normal dict behavior, but can silently remove data.
+    <pre><code>words = [&quot;hi&quot;, &quot;to&quot;, &quot;cat&quot;]
+by_length = {len(word): word for word in words}
+print(by_length)  # length 2 keeps only the last length-2 word</code></pre>
+  </div>
+
+  <h2 id="set-comps">5. Set Comprehensions</h2>
+  <p>A set comprehension builds unique values. It is useful for deduplication and extracting distinct features from data.</p>
+
+  <pre><code>emails = [
+    &quot;ALYA@example.com&quot;,
+    &quot;bima@example.com&quot;,
+    &quot;alya@example.com&quot;,
+]
+
+normalized_emails = {email.lower() for email in emails}
+print(normalized_emails)
+
+transactions = [
+    {&quot;category&quot;: &quot;food&quot;, &quot;amount&quot;: 25000},
+    {&quot;category&quot;: &quot;transport&quot;, &quot;amount&quot;: 12000},
+    {&quot;category&quot;: &quot;food&quot;, &quot;amount&quot;: 18000},
+]
+
+categories = {trx[&quot;category&quot;] for trx in transactions}
+print(categories)</code></pre>
+
+  <h2 id="generator-expressions">6. Generator Expressions: Lazy Comprehensions</h2>
+  <p>A generator expression looks like a list comprehension with parentheses, but it does not build the whole list immediately. It produces values one by one. This is useful for large data or when feeding values into functions like <code>sum</code>, <code>any</code>, and <code>all</code>.</p>
+
+  <pre><code>numbers = [1, 2, 3, 4, 5]
+
+# Builds a full list first
+squares_list = [n * n for n in numbers]
+
+# Produces values lazily
+squares_gen = (n * n for n in numbers)
+
+print(sum(n * n for n in numbers))
+print(any(n &gt; 3 for n in numbers))
+print(all(n &gt; 0 for n in numbers))</code></pre>
+
+  <div class="callout info">
+    <strong>List comprehension vs generator expression</strong>
+    Use a list comprehension when you need the resulting list multiple times, need indexing, or need to inspect it. Use a generator expression when you only stream values once into another operation.
+  </div>
+
+  <h2 id="nested">7. Nested Comprehensions</h2>
+  <p>Nested comprehensions are powerful but easy to read wrong. The order of <code>for</code> clauses follows the same order as nested loops.</p>
+
+  <pre><code>matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+]
+
+# Normal nested loop
+flattened = []
+for row in matrix:
+    for value in row:
+        flattened.append(value)
+
+# Equivalent nested comprehension
+flattened = [value for row in matrix for value in row]
+
+print(flattened)</code></pre>
+
+  <h3>Matrix transformation</h3>
+  <pre><code>matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+]
+
+# Square every cell but keep the 2D shape
+squared_matrix = [[value * value for value in row] for row in matrix]
+
+print(squared_matrix)</code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️ Readability rule</strong>
+    One loop: usually good. Two loops: okay if simple. Three loops or complex logic: use normal loops. Your future self deserves human rights.
+  </div>
+
+  <h2 id="patterns">8. Practical Patterns</h2>
+  <h3>Pattern A: Clean text data</h3>
+  <pre><code>raw_tags = [&quot; Python &quot;, &quot;DATA&quot;, &quot;&quot;, &quot; ml &quot;, &quot;Python&quot;]
+
+clean_tags = [tag.strip().lower() for tag in raw_tags if tag.strip()]
+unique_tags = {tag.strip().lower() for tag in raw_tags if tag.strip()}
+
+print(clean_tags)
+print(unique_tags)</code></pre>
+
+  <h3>Pattern B: Extract columns from rows</h3>
+  <pre><code>rows = [
+    {&quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88},
+    {&quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 76},
+    {&quot;name&quot;: &quot;Citra&quot;, &quot;score&quot;: 92},
+]
+
+names = [row[&quot;name&quot;] for row in rows]
+scores = [row[&quot;score&quot;] for row in rows]
+score_by_name = {row[&quot;name&quot;]: row[&quot;score&quot;] for row in rows}
+
+print(names)
+print(scores)
+print(score_by_name)</code></pre>
+
+  <h3>Pattern C: Combine two lists</h3>
+  <pre><code>names = [&quot;Alya&quot;, &quot;Bima&quot;, &quot;Citra&quot;]
+scores = [88, 76, 92]
+
+records = [{&quot;name&quot;: name, &quot;score&quot;: score} for name, score in zip(names, scores)]
+print(records)</code></pre>
+
+  <h2 id="readability">9. Readability and Style</h2>
+  <p>A comprehension is good when it makes the data transformation obvious. It is bad when it becomes a puzzle. Compact does not automatically mean clean. Kadang kode pendek itu bukan elegan, cuma typo yang lebih susah dilacak.</p>
+
+  <table>
+    <tr><th>Situation</th><th>Prefer</th><th>Why</th></tr>
+    <tr><td>Simple transform</td><td>Comprehension</td><td>Clear and compact</td></tr>
+    <tr><td>Simple filter</td><td>Comprehension</td><td>Readable condition</td></tr>
+    <tr><td>Multiple side effects</td><td>Normal loop</td><td>Easier to debug</td></tr>
+    <tr><td>Try/except inside loop</td><td>Normal loop</td><td>Comprehensions do not handle multi-line exception logic well</td></tr>
+    <tr><td>Deep nesting</td><td>Normal loop</td><td>Less mental overhead</td></tr>
+  </table>
+
+  <h2 id="mistakes">10. Common Mistakes</h2>
+  <div class="callout danger">
+    <strong>❌ Using comprehension only for side effects</strong>
+    <pre><code># Bad: creates a useless list of None values
+[print(name) for name in names]
+
+# Good
+for name in names:
+    print(name)</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Mixing up filter syntax and conditional expression syntax</strong>
+    <pre><code>scores = [40, 80, 90]
+
+# Filter: fewer items
+passed_scores = [s for s in scores if s &gt;= 70]
+
+# Conditional expression: same number of items
+labels = [&quot;pass&quot; if s &gt;= 70 else &quot;fail&quot; for s in scores]</code></pre>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Overusing nested comprehensions</strong>
+    If you need to explain the comprehension line for more than 10 seconds, it probably wants to become a normal loop.
+  </div>
+
+  <h2 id="reference">11. Quick Reference</h2>
+  <table>
+    <tr><th>Goal</th><th>Pattern</th></tr>
+    <tr><td>Transform list</td><td><code>[f(x) for x in items]</code></td></tr>
+    <tr><td>Filter list</td><td><code>[x for x in items if condition]</code></td></tr>
+    <tr><td>Conditional value</td><td><code>[a if condition else b for x in items]</code></td></tr>
+    <tr><td>Dict mapping</td><td><code>{key: value for item in items}</code></td></tr>
+    <tr><td>Unique transformed values</td><td><code>{f(x) for x in items}</code></td></tr>
+    <tr><td>Lazy stream</td><td><code>(f(x) for x in items)</code></td></tr>
+    <tr><td>Flatten 2D list</td><td><code>[x for row in matrix for x in row]</code></td></tr>
+  </table>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What is the difference between filtering and conditional value selection?</li>
+      <li>When should you choose a generator expression instead of a list comprehension?</li>
+      <li>Why can duplicate keys be dangerous in a dict comprehension?</li>
+      <li>Rewrite a loop that appends transformed values into a list comprehension.</li>
+      <li>When does a comprehension become less readable than a normal loop?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

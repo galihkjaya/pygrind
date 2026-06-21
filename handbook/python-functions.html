@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functions — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><span>Phase 1 · Foundation</span><h2>Python Basics</h2></div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html" class="active">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Functions</span></div>
+  <h1>Functions</h1>
+  <p class="subtitle">Define reusable logic, understand arguments deeply, and learn Python's scoping rules and recursion.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 · Tier 3 Problems</div>
+
+  <div class="section-nav">
+    <a href="#basics">Basics</a>
+    <a href="#args">Arguments</a>
+    <a href="#return">Return Values</a>
+    <a href="#scope">Scope (LEGB)</a>
+    <a href="#firstclass">First-Class Functions</a>
+    <a href="#recursion">Recursion</a>
+    <a href="#mistakes">Common Mistakes</a>
+  </div>
+
+  <h2 id="basics">1. Defining Functions</h2>
+  <p>Functions let you name and reuse a block of code. The <code>def</code> keyword defines one.</p>
+
+  <pre><code><span class="comment"># Basic function</span>
+<span class="kw">def</span> <span class="fn">greet</span>():
+    <span class="fn">print</span>(<span class="str">"Hello, World!"</span>)
+
+<span class="fn">greet</span>()   <span class="comment"># Call it</span>
+
+<span class="comment"># With a docstring (ALWAYS write these)</span>
+<span class="kw">def</span> <span class="fn">calculate_bmi</span>(weight_kg, height_m):
+    <span class="str">"""Calculate Body Mass Index.
+    
+    Args:
+        weight_kg: Weight in kilograms.
+        height_m: Height in meters.
+    
+    Returns:
+        BMI as a float, rounded to 1 decimal place.
+    """</span>
+    bmi = weight_kg / (height_m ** <span class="num">2</span>)
+    <span class="kw">return</span> <span class="fn">round</span>(bmi, <span class="num">1</span>)
+
+result = <span class="fn">calculate_bmi</span>(<span class="num">70</span>, <span class="num">1.75</span>)
+<span class="fn">print</span>(result)   <span class="comment"># 22.9</span>
+<span class="fn">help</span>(<span class="fn">calculate_bmi</span>)   <span class="comment"># Shows the docstring</span></code></pre>
+
+  <h2 id="args">2. Arguments (The Full Picture)</h2>
+
+  <h3>Positional Arguments</h3>
+  <pre><code><span class="kw">def</span> <span class="fn">add</span>(a, b):
+    <span class="kw">return</span> a + b
+
+<span class="fn">add</span>(<span class="num">3</span>, <span class="num">5</span>)      <span class="comment"># a=3, b=5  → 8</span>
+<span class="fn">add</span>(<span class="num">5</span>, <span class="num">3</span>)      <span class="comment"># a=5, b=3  → 8 (same result here)</span>
+<span class="comment"># Position matters for non-commutative operations:</span>
+<span class="kw">def</span> <span class="fn">divide</span>(a, b):
+    <span class="kw">return</span> a / b
+<span class="fn">divide</span>(<span class="num">10</span>, <span class="num">2</span>)  <span class="comment"># 5.0</span>
+<span class="fn">divide</span>(<span class="num">2</span>, <span class="num">10</span>)  <span class="comment"># 0.2  — different!</span></code></pre>
+
+  <h3>Keyword Arguments</h3>
+  <pre><code><span class="kw">def</span> <span class="fn">create_user</span>(name, age, role):
+    <span class="kw">return</span> {<span class="str">"name"</span>: name, <span class="str">"age"</span>: age, <span class="str">"role"</span>: role}
+
+<span class="comment"># Keyword args can be in any order</span>
+<span class="fn">create_user</span>(role=<span class="str">"admin"</span>, name=<span class="str">"Andi"</span>, age=<span class="num">25</span>)
+
+<span class="comment"># Mix positional and keyword (positional must come first)</span>
+<span class="fn">create_user</span>(<span class="str">"Andi"</span>, age=<span class="num">25</span>, role=<span class="str">"admin"</span>)</code></pre>
+
+  <h3>Default Arguments</h3>
+  <pre><code><span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="str">"Hello"</span>, punctuation=<span class="str">"!"</span>):
+    <span class="kw">return</span> <span class="str">f"</span>{greeting}<span class="str">, </span>{name}<span class="str">{punctuation}"</span>
+
+<span class="fn">greet</span>(<span class="str">"Andi"</span>)                     <span class="comment"># "Hello, Andi!"</span>
+<span class="fn">greet</span>(<span class="str">"Andi"</span>, <span class="str">"Hi"</span>)               <span class="comment"># "Hi, Andi!"</span>
+<span class="fn">greet</span>(<span class="str">"Andi"</span>, punctuation=<span class="str">"."</span>)   <span class="comment"># "Hello, Andi."</span></code></pre>
+
+  <div class="callout danger">
+    <strong>❌ THE MUTABLE DEFAULT ARGUMENT TRAP — Read This Carefully</strong>
+    <pre style="margin:8px 0 0"><code><span class="comment"># WRONG — the list is created ONCE and shared across all calls!</span>
+<span class="kw">def</span> <span class="fn">add_item</span>(item, items=[]):
+    items.append(item)
+    <span class="kw">return</span> items
+
+<span class="fn">print</span>(<span class="fn">add_item</span>(<span class="str">"a"</span>))   <span class="comment"># ['a']</span>
+<span class="fn">print</span>(<span class="fn">add_item</span>(<span class="str">"b"</span>))   <span class="comment"># ['a', 'b']  ← surprise!</span>
+<span class="fn">print</span>(<span class="fn">add_item</span>(<span class="str">"c"</span>))   <span class="comment"># ['a', 'b', 'c']  ← it accumulates!</span>
+
+<span class="comment"># CORRECT — use None as sentinel, create fresh list inside</span>
+<span class="kw">def</span> <span class="fn">add_item</span>(item, items=<span class="kw">None</span>):
+    <span class="kw">if</span> items <span class="kw">is</span> <span class="kw">None</span>:
+        items = []
+    items.append(item)
+    <span class="kw">return</span> items</code></pre>
+  </div>
+
+  <h3>*args — Variable Positional Arguments</h3>
+  <pre><code><span class="comment"># *args collects extra positional args into a TUPLE</span>
+<span class="kw">def</span> <span class="fn">sum_all</span>(*args):
+    <span class="fn">print</span>(<span class="fn">type</span>(args))    <span class="comment"># &lt;class 'tuple'&gt;</span>
+    <span class="kw">return</span> <span class="fn">sum</span>(args)
+
+<span class="fn">sum_all</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)          <span class="comment"># 6</span>
+<span class="fn">sum_all</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)    <span class="comment"># 15</span>
+
+<span class="comment"># Combining with regular args</span>
+<span class="kw">def</span> <span class="fn">log</span>(level, *messages):
+    <span class="kw">for</span> msg <span class="kw">in</span> messages:
+        <span class="fn">print</span>(<span class="str">f"[</span>{level}<span class="str">] </span>{msg}<span class="str">"</span>)
+
+<span class="fn">log</span>(<span class="str">"INFO"</span>, <span class="str">"Server started"</span>, <span class="str">"Listening on port 8080"</span>)
+
+<span class="comment"># Unpacking a list into positional args</span>
+nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="fn">sum_all</span>(*nums)   <span class="comment"># Same as sum_all(1, 2, 3)</span></code></pre>
+
+  <h3>**kwargs — Variable Keyword Arguments</h3>
+  <pre><code><span class="comment"># **kwargs collects extra keyword args into a DICT</span>
+<span class="kw">def</span> <span class="fn">print_info</span>(**kwargs):
+    <span class="fn">print</span>(<span class="fn">type</span>(kwargs))    <span class="comment"># &lt;class 'dict'&gt;</span>
+    <span class="kw">for</span> key, val <span class="kw">in</span> kwargs.items():
+        <span class="fn">print</span>(<span class="str">f"  </span>{key}<span class="str">: </span>{val}<span class="str">"</span>)
+
+<span class="fn">print_info</span>(name=<span class="str">"Andi"</span>, age=<span class="num">25</span>, city=<span class="str">"Jakarta"</span>)
+<span class="comment"># name: Andi</span>
+<span class="comment"># age: 25</span>
+<span class="comment"># city: Jakarta</span>
+
+<span class="comment"># Unpacking a dict into keyword args</span>
+data = {<span class="str">"name"</span>: <span class="str">"Andi"</span>, <span class="str">"age"</span>: <span class="num">25</span>}
+<span class="fn">create_user</span>(**data, role=<span class="str">"admin"</span>)</code></pre>
+
+  <h3>Full argument order</h3>
+  <pre><code><span class="comment"># Order: positional, *args, keyword-only, **kwargs</span>
+<span class="kw">def</span> <span class="fn">full_example</span>(a, b, *args, keyword_only, **kwargs):
+    <span class="fn">print</span>(a, b, args, keyword_only, kwargs)
+
+<span class="fn">full_example</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, keyword_only=<span class="str">"kw"</span>, x=<span class="num">10</span>, y=<span class="num">20</span>)
+<span class="comment"># 1 2 (3, 4) kw {'x': 10, 'y': 20}</span>
+
+<span class="comment"># Keyword-only args: after * separator</span>
+<span class="kw">def</span> <span class="fn">connect</span>(host, port, *, timeout=<span class="num">30</span>, retries=<span class="num">3</span>):
+    <span class="comment"># timeout and retries MUST be passed by keyword</span>
+    <span class="fn">print</span>(<span class="str">f"Connecting to </span>{host}<span class="str">:</span>{port}<span class="str"> (timeout=</span>{timeout}<span class="str">)"</span>)
+
+<span class="fn">connect</span>(<span class="str">"localhost"</span>, <span class="num">8080</span>, timeout=<span class="num">60</span>)   <span class="comment"># ✅</span>
+<span class="fn">connect</span>(<span class="str">"localhost"</span>, <span class="num">8080</span>, <span class="num">60</span>)           <span class="comment"># TypeError! timeout must be keyword</span></code></pre>
+
+  <h2 id="return">3. Return Values</h2>
+  <pre><code><span class="comment"># No return → returns None implicitly</span>
+<span class="kw">def</span> <span class="fn">say_hi</span>():
+    <span class="fn">print</span>(<span class="str">"Hi"</span>)
+
+result = <span class="fn">say_hi</span>()
+<span class="fn">print</span>(result)   <span class="comment"># None</span>
+
+<span class="comment"># Return multiple values (returns a tuple)</span>
+<span class="kw">def</span> <span class="fn">min_max</span>(numbers):
+    <span class="kw">return</span> <span class="fn">min</span>(numbers), <span class="fn">max</span>(numbers)
+
+low, high = <span class="fn">min_max</span>([<span class="num">3</span>, <span class="num">1</span>, <span class="num">9</span>, <span class="num">2</span>, <span class="num">7</span>])
+<span class="fn">print</span>(low, high)    <span class="comment"># 1 9</span>
+
+result = <span class="fn">min_max</span>([<span class="num">3</span>, <span class="num">1</span>, <span class="num">9</span>])
+<span class="fn">print</span>(result)       <span class="comment"># (1, 9) — it's a tuple</span>
+
+<span class="comment"># Early return pattern (guard clauses)</span>
+<span class="kw">def</span> <span class="fn">divide</span>(a, b):
+    <span class="kw">if</span> b == <span class="num">0</span>:
+        <span class="kw">return</span> <span class="kw">None</span>   <span class="comment"># Exit early</span>
+    <span class="kw">return</span> a / b</code></pre>
+
+  <h2 id="scope">4. Scope — The LEGB Rule</h2>
+  <p>When Python looks up a name, it searches in this order: <strong>L</strong>ocal → <strong>E</strong>nclosing → <strong>G</strong>lobal → <strong>B</strong>uilt-in.</p>
+
+  <pre><code>x = <span class="str">"global"</span>   <span class="comment"># G — global scope</span>
+
+<span class="kw">def</span> <span class="fn">outer</span>():
+    x = <span class="str">"enclosing"</span>   <span class="comment"># E — enclosing scope</span>
+    
+    <span class="kw">def</span> <span class="fn">inner</span>():
+        x = <span class="str">"local"</span>   <span class="comment"># L — local scope</span>
+        <span class="fn">print</span>(x)       <span class="comment"># "local" — finds L first</span>
+    
+    <span class="fn">inner</span>()
+    <span class="fn">print</span>(x)           <span class="comment"># "enclosing"</span>
+
+<span class="fn">outer</span>()
+<span class="fn">print</span>(x)               <span class="comment"># "global"</span>
+
+<span class="comment"># B — built-ins: len, print, range, etc.</span>
+<span class="fn">print</span>(<span class="fn">len</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>]))   <span class="comment"># len is in built-in scope</span></code></pre>
+
+  <h3>global and nonlocal keywords</h3>
+  <pre><code>counter = <span class="num">0</span>
+
+<span class="kw">def</span> <span class="fn">increment</span>():
+    <span class="kw">global</span> counter      <span class="comment"># Declare we mean the global one</span>
+    counter += <span class="num">1</span>
+
+<span class="fn">increment</span>()
+<span class="fn">increment</span>()
+<span class="fn">print</span>(counter)   <span class="comment"># 2</span>
+
+<span class="comment"># nonlocal — for nested functions</span>
+<span class="kw">def</span> <span class="fn">make_counter</span>():
+    count = <span class="num">0</span>
+    <span class="kw">def</span> <span class="fn">increment</span>():
+        <span class="kw">nonlocal</span> count   <span class="comment"># Refers to enclosing 'count'</span>
+        count += <span class="num">1</span>
+        <span class="kw">return</span> count
+    <span class="kw">return</span> increment
+
+counter = <span class="fn">make_counter</span>()
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="comment"># 1</span>
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="comment"># 2</span>
+<span class="fn">print</span>(<span class="fn">counter</span>())  <span class="comment"># 3</span></code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️ Avoid global variables</strong>
+    Global state makes code hard to test and reason about. Pass values as arguments and return results instead.
+  </div>
+
+  <h2 id="firstclass">5. Functions Are First-Class Objects</h2>
+  <p>In Python, functions are objects. You can assign them to variables, pass them as arguments, and return them from other functions.</p>
+
+  <pre><code><span class="comment"># Assign to a variable</span>
+<span class="kw">def</span> <span class="fn">square</span>(x):
+    <span class="kw">return</span> x ** <span class="num">2</span>
+
+fn = square
+<span class="fn">print</span>(<span class="fn">fn</span>(<span class="num">5</span>))   <span class="comment"># 25</span>
+
+<span class="comment"># Pass as argument</span>
+<span class="kw">def</span> <span class="fn">apply</span>(func, value):
+    <span class="kw">return</span> <span class="fn">func</span>(value)
+
+<span class="fn">print</span>(<span class="fn">apply</span>(square, <span class="num">4</span>))   <span class="comment"># 16</span>
+<span class="fn">print</span>(<span class="fn">apply</span>(<span class="builtin">str</span>, <span class="num">42</span>))     <span class="comment"># "42"</span>
+
+<span class="comment"># Return from a function (closure)</span>
+<span class="kw">def</span> <span class="fn">multiplier</span>(n):
+    <span class="kw">def</span> <span class="fn">multiply</span>(x):
+        <span class="kw">return</span> x * n    <span class="comment"># 'n' is captured from outer scope</span>
+    <span class="kw">return</span> multiply
+
+double = <span class="fn">multiplier</span>(<span class="num">2</span>)
+triple = <span class="fn">multiplier</span>(<span class="num">3</span>)
+<span class="fn">print</span>(<span class="fn">double</span>(<span class="num">5</span>))   <span class="comment"># 10</span>
+<span class="fn">print</span>(<span class="fn">triple</span>(<span class="num">5</span>))   <span class="comment"># 15</span>
+
+<span class="comment"># Store in a list</span>
+operations = [<span class="builtin">str</span>, <span class="builtin">int</span>, <span class="builtin">float</span>, square]
+<span class="kw">for</span> op <span class="kw">in</span> operations:
+    <span class="fn">print</span>(<span class="fn">op</span>(<span class="num">5</span>))</code></pre>
+
+  <h3>Lambda Functions</h3>
+  <pre><code><span class="comment"># lambda: anonymous single-expression function</span>
+square = <span class="kw">lambda</span> x: x ** <span class="num">2</span>
+add = <span class="kw">lambda</span> a, b: a + b
+
+<span class="fn">print</span>(<span class="fn">square</span>(<span class="num">4</span>))    <span class="comment"># 16</span>
+<span class="fn">print</span>(<span class="fn">add</span>(<span class="num">3</span>, <span class="num">5</span>))   <span class="comment"># 8</span>
+
+<span class="comment"># Main use: as key functions for sorting</span>
+students = [(<span class="str">"Alice"</span>, <span class="num">85</span>), (<span class="str">"Bob"</span>, <span class="num">92</span>), (<span class="str">"Charlie"</span>, <span class="num">78</span>)]
+students.sort(key=<span class="kw">lambda</span> s: s[<span class="num">1</span>])        <span class="comment"># Sort by score</span>
+students.sort(key=<span class="kw">lambda</span> s: s[<span class="num">1</span>], reverse=<span class="kw">True</span>)  <span class="comment"># Descending</span>
+
+words = [<span class="str">"banana"</span>, <span class="str">"apple"</span>, <span class="str">"cherry"</span>]
+words.sort(key=<span class="kw">lambda</span> w: <span class="fn">len</span>(w))   <span class="comment"># Sort by length</span>
+
+<span class="comment"># With map() and filter()</span>
+nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+squared = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x**<span class="num">2</span>, nums))     <span class="comment"># [1, 4, 9, 16, 25]</span>
+evens   = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x%<span class="num">2</span>==<span class="num">0</span>, nums)) <span class="comment"># [2, 4]</span></code></pre>
+
+  <h2 id="recursion">6. Recursion</h2>
+  <p>A function that calls itself. Every recursive solution needs: (1) a <strong>base case</strong> to stop, (2) a <strong>recursive case</strong> that moves toward the base.</p>
+
+  <pre><code><span class="comment"># Factorial: n! = n × (n-1)!</span>
+<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n <= <span class="num">1</span>:           <span class="comment"># Base case</span>
+        <span class="kw">return</span> <span class="num">1</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="num">1</span>)   <span class="comment"># Recursive case</span>
+
+<span class="fn">factorial</span>(<span class="num">5</span>)  <span class="comment"># 120</span>
+<span class="comment"># factorial(5)</span>
+<span class="comment">#   → 5 * factorial(4)</span>
+<span class="comment">#       → 4 * factorial(3)</span>
+<span class="comment">#           → 3 * factorial(2)</span>
+<span class="comment">#               → 2 * factorial(1)</span>
+<span class="comment">#                   → 1  (base case!)</span>
+
+<span class="comment"># Fibonacci</span>
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">if</span> n <= <span class="num">1</span>:
+        <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>)
+
+<span class="comment"># This is slow (exponential) — use memoization</span>
+<span class="kw">from</span> functools <span class="kw">import</span> lru_cache
+
+<span class="kw">@</span><span class="fn">lru_cache</span>(maxsize=<span class="kw">None</span>)
+<span class="kw">def</span> <span class="fn">fib_fast</span>(n):
+    <span class="kw">if</span> n <= <span class="num">1</span>:
+        <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib_fast</span>(n-<span class="num">1</span>) + <span class="fn">fib_fast</span>(n-<span class="num">2</span>)
+
+<span class="fn">fib_fast</span>(<span class="num">50</span>)   <span class="comment"># Instant; without cache would take minutes</span>
+
+<span class="comment"># Recursive directory traversal (real-world use)</span>
+<span class="kw">import</span> os
+<span class="kw">def</span> <span class="fn">list_files</span>(path, indent=<span class="num">0</span>):
+    <span class="kw">for</span> item <span class="kw">in</span> os.listdir(path):
+        full = os.path.join(path, item)
+        <span class="fn">print</span>(<span class="str">"  "</span> * indent + item)
+        <span class="kw">if</span> os.path.isdir(full):
+            <span class="fn">list_files</span>(full, indent + <span class="num">1</span>)   <span class="comment"># Recurse into subdir</span></code></pre>
+
+  <div class="callout info">
+    <strong>💡 Python's recursion limit</strong>
+    Python limits recursion depth to 1000 by default (to prevent stack overflow). For deep recursion, either use iteration or increase the limit with <code>sys.setrecursionlimit()</code>. For heavy use, prefer iterative solutions.
+  </div>
+
+  <h2 id="mistakes">7. Common Mistakes</h2>
+
+  <div class="callout danger">
+    <strong>❌ Mutable default argument (already shown — worth repeating)</strong>
+    Never use <code>[]</code>, <code>{}</code>, or <code>set()</code> as default arguments. Use <code>None</code> and create inside.
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Missing return — function returns None silently</strong>
+    <pre style="margin:8px 0 0"><code><span class="kw">def</span> <span class="fn">double</span>(x):
+    x * <span class="num">2</span>   <span class="comment"># ❌ Missing return! Returns None</span>
+
+result = <span class="fn">double</span>(<span class="num">5</span>)
+<span class="fn">print</span>(result)      <span class="comment"># None — not 10!</span></code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Shadowing built-ins</strong>
+    <pre style="margin:8px 0 0"><code><span class="comment"># Don't name variables after built-ins</span>
+list = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]      <span class="comment"># ❌ Shadows built-in list()</span>
+<span class="fn">print</span>(<span class="builtin">list</span>(<span class="str">"abc"</span>))    <span class="comment"># TypeError! list is now your list, not the built-in</span>
+
+<span class="comment"># Also avoid: input, print, id, type, str, int, sum, min, max</span></code></pre>
+  </div>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What is the LEGB rule? Give an example where it matters.</li>
+      <li>What's the difference between <code>*args</code> and <code>**kwargs</code>? What types do they produce?</li>
+      <li>Why is <code>def f(x, items=[])</code> dangerous? What's the fix?</li>
+      <li>What does <code>nonlocal</code> do? When would you need it?</li>
+      <li>Write a recursive function to sum all elements of a nested list like <code>[1, [2, [3, 4]], 5]</code>.</li>
+      <li>What's a closure? Write one that generates power functions (e.g., <code>square = make_power(2)</code>).</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

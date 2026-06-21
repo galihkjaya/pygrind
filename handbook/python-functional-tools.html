@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functional Tools: lambda, map, filter &amp; functools - Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; border: 0; padding: 0; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 280px; max-width: 960px; padding: 48px 52px 88px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 750; color: #f1f5f9; margin-bottom: 8px; line-height: 1.2; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; text-transform: uppercase; letter-spacing: .5px; }
+  h2 { font-size: 22px; font-weight: 650; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 650; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  .concept-box p:last-child, .callout p:last-child { margin-bottom: 0; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code, td code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { color: #7c85b3; font-size: 13px; }
+  .file { color:#86efac; }
+  @media (max-width: 850px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 2 · Intermediate</span>
+    <h2>Python Handbook</h2>
+  </div>
+  <nav><a href="python-oop.html">9. OOP</a><a href="python-generators-iterators-context-managers.html">10. Generators, Iterators & Context Managers</a><a href="python-functional-tools.html" class="active">11. Functional Tools</a><a href="python-standard-library.html">12. Standard Library</a><a href="python-type-hints-dataclasses.html">13. Type Hints & Dataclasses</a><a href="python-asyncio-async-await.html">14. Async Python</a><a href="python-testing-debugging.html">15. Testing & Debugging</a><a href="python-packaging-project-structure.html">16. Packaging & Project Structure</a></nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 2 - Intermediate Python › <span>Functional Tools: lambda, map, filter &amp; functools</span></div>
+  <h1>Functional Tools: lambda, map, filter &amp; functools</h1>
+  <p class="subtitle">Use Python functions as values to build clean transformations, callbacks, and reusable utilities.</p>
+  <div class="tier-badge">Supports Tier 2 · Tier 3 Problems</div>
+  <div class="section-nav"><a href="#mental-model">Mental model</a><a href="#lambda">lambda</a><a href="#map-filter">map/filter</a><a href="#reduce">reduce</a><a href="#partial">partial</a><a href="#cache">Cache</a><a href="#operator">operator</a><a href="#closures">Closures</a><a href="#mistakes">Mistakes</a></div>
+  <h2 id="mental-model">1. Mental Model: Functions as Values</h2><p>Functional programming treats functions as values. You can store a function in a variable, pass it into another function, return it from a function, and compose small transformations. Python is not a purely functional language, but these tools are extremely useful for clean data pipelines and reusable logic.</p><pre><code>def shout(text):
+    return text.upper() + &quot;!&quot;
+
+formatter = shout
+print(formatter(&quot;hello&quot;))
+
+def apply_to_each(items, fn):
+    result = []
+    for item in items:
+        result.append(fn(item))
+    return result
+
+print(apply_to_each([&quot;a&quot;, &quot;b&quot;], shout))</code></pre><h2 id="lambda">2. lambda: Small Anonymous Functions</h2><p><code>lambda</code> creates a small one-expression function. It is best for short callbacks, sorting keys, and quick transformations. If your lambda becomes hard to read, write a normal <code>def</code>. Tidak semua harus dibuat aesthetic satu baris.</p><pre><code>users = [
+    {&quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88},
+    {&quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 95},
+    {&quot;name&quot;: &quot;Citra&quot;, &quot;score&quot;: 80},
+]
+
+by_score = sorted(users, key=lambda user: user[&quot;score&quot;], reverse=True)
+print(by_score)
+
+names = list(map(lambda user: user[&quot;name&quot;], users))
+print(names)</code></pre><div class="callout warn"><strong>Lambda limit</strong><p>A lambda can contain only one expression. No assignment, no multi-line logic, no statements. If logic needs a name, tests, or explanation, use <code>def</code>.</p></div><h2 id="map-filter">3. map(), filter(), and Comprehension Tradeoffs</h2><p><code>map()</code> transforms each item. <code>filter()</code> keeps items that pass a condition. In modern Python, comprehensions are often more readable, but map and filter are still useful when you already have named functions.</p><pre><code>numbers = [1, 2, 3, 4, 5]
+
+# map: transform
+squares = list(map(lambda n: n * n, numbers))
+
+# filter: keep
+odd_numbers = list(filter(lambda n: n % 2 == 1, numbers))
+
+# Often more readable
+squares_v2 = [n * n for n in numbers]
+odd_numbers_v2 = [n for n in numbers if n % 2 == 1]
+
+print(squares)
+print(odd_numbers)</code></pre><table><tr><th>Tool</th><th>Input</th><th>Output</th><th>Best when</th></tr><tr><td><code>map(fn, items)</code></td><td>Function + iterable</td><td>Iterator of transformed values</td><td>Function already exists</td></tr><tr><td><code>filter(fn, items)</code></td><td>Predicate + iterable</td><td>Iterator of kept values</td><td>Filtering with reusable predicate</td></tr><tr><td>Comprehension</td><td>Expression + loop</td><td>List, set, dict</td><td>Readability matters</td></tr></table><h2 id="reduce">4. functools.reduce(): Combine Many Values Into One</h2><p><code>reduce()</code> repeatedly combines values into one result. It is powerful, but do not use it just to look clever. For common tasks, <code>sum</code>, <code>min</code>, <code>max</code>, <code>any</code>, and <code>all</code> are clearer.</p><pre><code>from functools import reduce
+
+numbers = [1, 2, 3, 4]
+product = reduce(lambda acc, n: acc * n, numbers, 1)
+print(product)
+
+# Usually clearer for summing
+print(sum(numbers))</code></pre><h2 id="partial">5. functools.partial(): Pre-fill Arguments</h2><p><code>partial()</code> creates a new function with some arguments already filled in. It is useful for callbacks, dependency injection, and configuration-heavy functions.</p><pre><code>from functools import partial
+
+def multiply(a, b):
+    return a * b
+
+double = partial(multiply, 2)
+triple = partial(multiply, 3)
+
+print(double(10))
+print(triple(10))</code></pre><h2 id="cache">6. functools.lru_cache(): Memoization</h2><p><code>lru_cache</code> remembers previous function results. It is perfect for expensive pure functions where the same input should always produce the same output. It is not good for functions that depend on time, random values, files, databases, or external API state.</p><pre><code>from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def fibonacci(n):
+    if n &lt;= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print(fibonacci(30))
+print(fibonacci.cache_info())</code></pre><div class="callout danger"><strong>Cache purity rule</strong><p>Do not cache functions that return different results for the same input. Caching API responses or database queries can be okay only if you understand staleness.</p></div><h2 id="operator">7. operator Module and Key Functions</h2><p>The <code>operator</code> module gives function versions of common operations. <code>itemgetter</code> and <code>attrgetter</code> are useful for sorting and extracting fields.</p><pre><code>from operator import itemgetter
+
+rows = [
+    {&quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88},
+    {&quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 95},
+    {&quot;name&quot;: &quot;Citra&quot;, &quot;score&quot;: 80},
+]
+
+rows_by_score = sorted(rows, key=itemgetter(&quot;score&quot;), reverse=True)
+print(rows_by_score)</code></pre><h2 id="closures">8. Closures: Functions That Remember</h2><p>A closure is a function that remembers variables from the scope where it was created. This is the foundation behind many decorators and factory functions.</p><pre><code>def make_prefixer(prefix):
+    def add_prefix(text):
+        return f&quot;{prefix}{text}&quot;
+    return add_prefix
+
+add_error = make_prefixer(&quot;ERROR: &quot;)
+print(add_error(&quot;File not found&quot;))</code></pre><h2 id="mistakes">9. Common Mistakes</h2><ul><li>Using <code>lambda</code> for complex logic that deserves a named function.</li><li>Forgetting that <code>map</code> and <code>filter</code> return iterators in Python 3.</li><li>Overusing <code>reduce</code> when a loop or built-in aggregator is clearer.</li><li>Caching functions with side effects or external state.</li><li>Making functional code so abstract that future-you needs a decoder ring.</li></ul><div class="quiz"><h3>Check Your Understanding</h3><ol><li>When is <code>lambda</code> appropriate?</li><li>Why do <code>map</code> and <code>filter</code> often need <code>list()</code> for printing?</li><li>What kind of function is safe to cache with <code>lru_cache</code>?</li><li>What problem does <code>partial</code> solve?</li><li>What is a closure?</li></ol></div>
+</div>
+</body>
+</html>

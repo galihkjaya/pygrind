@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Flow — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html" class="active">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Control Flow</span></div>
+  <h1>Control Flow</h1>
+  <p class="subtitle">Master if/elif/else, for loops, while loops, and how to direct your program's execution path.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 Problems</div>
+
+  <div class="section-nav">
+    <a href="#if">if / elif / else</a>
+    <a href="#ternary">Ternary</a>
+    <a href="#match">match/case</a>
+    <a href="#for">for loops</a>
+    <a href="#while">while loops</a>
+    <a href="#control">break/continue/pass</a>
+    <a href="#nested">Nested Loops</a>
+    <a href="#mistakes">Common Mistakes</a>
+  </div>
+
+  <!-- ─── IF ─── -->
+  <h2 id="if">1. if / elif / else</h2>
+  <p>Python uses <strong>indentation</strong> (4 spaces) to define code blocks — no curly braces. This is not optional; wrong indentation causes errors.</p>
+
+  <pre><code>score = <span class="num">85</span>
+
+<span class="kw">if</span> score >= <span class="num">90</span>:
+    <span class="fn">print</span>(<span class="str">"A"</span>)
+<span class="kw">elif</span> score >= <span class="num">80</span>:
+    <span class="fn">print</span>(<span class="str">"B"</span>)     <span class="comment"># This runs</span>
+<span class="kw">elif</span> score >= <span class="num">70</span>:
+    <span class="fn">print</span>(<span class="str">"C"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"F"</span>)</code></pre>
+
+  <div class="callout info">
+    <strong>💡 How Python evaluates elif chains</strong>
+    Python checks each condition top-to-bottom and stops at the FIRST True one. Even if multiple conditions could be true, only the first match runs.
+  </div>
+
+  <h3>Conditions can be any expression</h3>
+  <pre><code>name = <span class="str">""</span>
+items = []
+user = <span class="kw">None</span>
+
+<span class="kw">if</span> name:                    <span class="comment"># False — empty string is falsy</span>
+    <span class="fn">print</span>(<span class="str">"Has name"</span>)
+<span class="kw">if not</span> items:               <span class="comment"># True — empty list is falsy</span>
+    <span class="fn">print</span>(<span class="str">"No items"</span>)
+<span class="kw">if</span> user <span class="kw">is</span> <span class="kw">None</span>:            <span class="comment"># True</span>
+    <span class="fn">print</span>(<span class="str">"No user"</span>)
+
+<span class="comment"># Combining conditions</span>
+age = <span class="num">25</span>
+has_id = <span class="kw">True</span>
+<span class="kw">if</span> age >= <span class="num">18</span> <span class="kw">and</span> has_id:
+    <span class="fn">print</span>(<span class="str">"Entry allowed"</span>)
+
+<span class="comment"># Checking membership</span>
+role = <span class="str">"admin"</span>
+<span class="kw">if</span> role <span class="kw">in</span> (<span class="str">"admin"</span>, <span class="str">"superuser"</span>):
+    <span class="fn">print</span>(<span class="str">"Full access"</span>)</code></pre>
+
+  <!-- ─── TERNARY ─── -->
+  <h2 id="ternary">2. Ternary (Conditional Expression)</h2>
+  <p>A one-line if/else for simple value assignments.</p>
+
+  <pre><code><span class="comment"># Syntax: value_if_true if condition else value_if_false</span>
+age = <span class="num">20</span>
+status = <span class="str">"adult"</span> <span class="kw">if</span> age >= <span class="num">18</span> <span class="kw">else</span> <span class="str">"minor"</span>
+<span class="fn">print</span>(status)   <span class="comment"># "adult"</span>
+
+<span class="comment"># Common use: default values</span>
+name = user_name <span class="kw">if</span> user_name <span class="kw">else</span> <span class="str">"Guest"</span>
+
+<span class="comment"># In function calls</span>
+<span class="fn">print</span>(<span class="str">"even"</span> <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span> <span class="kw">else</span> <span class="str">"odd"</span>)
+
+<span class="comment"># Don't nest them — it hurts readability</span>
+<span class="comment"># Bad:</span>
+result = <span class="str">"A"</span> <span class="kw">if</span> x > <span class="num">90</span> <span class="kw">else</span> <span class="str">"B"</span> <span class="kw">if</span> x > <span class="num">80</span> <span class="kw">else</span> <span class="str">"C"</span>
+<span class="comment"># Use if/elif instead for 3+ branches</span></code></pre>
+
+  <!-- ─── MATCH ─── -->
+  <h2 id="match">3. match / case (Python 3.10+)</h2>
+  <p>Python's version of switch/case, but much more powerful — it supports pattern matching.</p>
+
+  <pre><code>command = <span class="str">"quit"</span>
+
+<span class="kw">match</span> command:
+    <span class="kw">case</span> <span class="str">"quit"</span>:
+        <span class="fn">print</span>(<span class="str">"Quitting..."</span>)
+    <span class="kw">case</span> <span class="str">"help"</span>:
+        <span class="fn">print</span>(<span class="str">"Showing help"</span>)
+    <span class="kw">case</span> <span class="str">"start"</span> | <span class="str">"run"</span>:    <span class="comment"># OR pattern</span>
+        <span class="fn">print</span>(<span class="str">"Starting..."</span>)
+    <span class="kw">case</span> _:                    <span class="comment"># Default (wildcard)</span>
+        <span class="fn">print</span>(<span class="str">"Unknown command"</span>)
+
+<span class="comment"># Matching with conditions (guards)</span>
+point = (<span class="num">3</span>, <span class="num">4</span>)
+<span class="kw">match</span> point:
+    <span class="kw">case</span> (<span class="num">0</span>, <span class="num">0</span>):
+        <span class="fn">print</span>(<span class="str">"Origin"</span>)
+    <span class="kw">case</span> (x, <span class="num">0</span>):
+        <span class="fn">print</span>(<span class="str">f"On x-axis at </span>{x}<span class="str">"</span>)
+    <span class="kw">case</span> (<span class="num">0</span>, y):
+        <span class="fn">print</span>(<span class="str">f"On y-axis at </span>{y}<span class="str">"</span>)
+    <span class="kw">case</span> (x, y) <span class="kw">if</span> x == y:
+        <span class="fn">print</span>(<span class="str">f"On diagonal: </span>{x}<span class="str">"</span>)
+    <span class="kw">case</span> (x, y):
+        <span class="fn">print</span>(<span class="str">f"Point at </span>{x}<span class="str">, </span>{y}<span class="str">"</span>)   <span class="comment"># This runs: Point at 3, 4</span></code></pre>
+
+  <!-- ─── FOR ─── -->
+  <h2 id="for">4. for Loops</h2>
+  <p>Python's <code>for</code> iterates over any <strong>iterable</strong> — lists, strings, ranges, dicts, files, and more.</p>
+
+  <pre><code><span class="comment"># Iterate over a list</span>
+fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"mango"</span>]
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(fruit)
+
+<span class="comment"># Iterate over a string</span>
+<span class="kw">for</span> char <span class="kw">in</span> <span class="str">"hello"</span>:
+    <span class="fn">print</span>(char)    <span class="comment"># h, e, l, l, o</span>
+
+<span class="comment"># range() — the workhorse</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):          <span class="comment"># 0, 1, 2, 3, 4</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, <span class="num">10</span>):       <span class="comment"># 2, 3, 4, ... 9</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="num">20</span>, <span class="num">3</span>):    <span class="comment"># 0, 3, 6, 9, 12, 15, 18 (step=3)</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>, <span class="num">0</span>, -<span class="num">1</span>):   <span class="comment"># 10, 9, 8, ... 1 (countdown)</span>
+    <span class="fn">print</span>(i)</code></pre>
+
+  <h3>Useful Loop Patterns</h3>
+  <pre><code><span class="comment"># enumerate() — get index AND value</span>
+names = [<span class="str">"Alice"</span>, <span class="str">"Bob"</span>, <span class="str">"Charlie"</span>]
+<span class="kw">for</span> i, name <span class="kw">in</span> <span class="fn">enumerate</span>(names):
+    <span class="fn">print</span>(<span class="str">f"</span>{i}<span class="str">: </span>{name}<span class="str">"</span>)
+<span class="comment"># 0: Alice</span>
+<span class="comment"># 1: Bob</span>
+<span class="comment"># 2: Charlie</span>
+
+<span class="fn">enumerate</span>(names, start=<span class="num">1</span>)   <span class="comment"># Start counting from 1</span>
+
+<span class="comment"># zip() — iterate two lists in parallel</span>
+scores = [<span class="num">85</span>, <span class="num">92</span>, <span class="num">78</span>]
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="fn">print</span>(<span class="str">f"</span>{name}<span class="str">: </span>{score}<span class="str">"</span>)
+
+<span class="comment"># Iterate over dict</span>
+person = {<span class="str">"name"</span>: <span class="str">"Andi"</span>, <span class="str">"age"</span>: <span class="num">25</span>}
+<span class="kw">for</span> key <span class="kw">in</span> person:            <span class="comment"># Iterates keys</span>
+    <span class="fn">print</span>(key)
+
+<span class="kw">for</span> key, value <span class="kw">in</span> person.items():
+    <span class="fn">print</span>(<span class="str">f"</span>{key}<span class="str"> = </span>{value}<span class="str">"</span>)
+
+<span class="comment"># _ as throwaway variable</span>
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+    <span class="fn">print</span>(<span class="str">"Hello!"</span>)           <span class="comment"># Don't need the index</span></code></pre>
+
+  <h3>for...else (unique to Python)</h3>
+  <pre><code><span class="comment"># The 'else' block runs ONLY if the loop completed without 'break'</span>
+numbers = [<span class="num">2</span>, <span class="num">4</span>, <span class="num">6</span>, <span class="num">8</span>]
+
+<span class="kw">for</span> n <span class="kw">in</span> numbers:
+    <span class="kw">if</span> n % <span class="num">2</span> != <span class="num">0</span>:
+        <span class="fn">print</span>(<span class="str">"Found odd number!"</span>)
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"All numbers are even"</span>)   <span class="comment"># This runs</span>
+
+<span class="comment"># Classic use: search with break</span>
+<span class="kw">for</span> user <span class="kw">in</span> users:
+    <span class="kw">if</span> user.id == target_id:
+        <span class="fn">print</span>(<span class="str">"Found!"</span>)
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"User not found"</span>)</code></pre>
+
+  <!-- ─── WHILE ─── -->
+  <h2 id="while">5. while Loops</h2>
+  <p>Runs as long as a condition is <code>True</code>. Use when you don't know ahead of time how many iterations you need.</p>
+
+  <pre><code><span class="comment"># Basic while</span>
+count = <span class="num">0</span>
+<span class="kw">while</span> count < <span class="num">5</span>:
+    <span class="fn">print</span>(count)
+    count += <span class="num">1</span>     <span class="comment"># CRITICAL: don't forget to update condition!</span>
+
+<span class="comment"># Infinite loop with break (very common pattern)</span>
+<span class="kw">while</span> <span class="kw">True</span>:
+    command = <span class="fn">input</span>(<span class="str">"Enter command: "</span>)
+    <span class="kw">if</span> command == <span class="str">"quit"</span>:
+        <span class="kw">break</span>
+    <span class="fn">print</span>(<span class="str">f"Running: </span>{command}<span class="str">"</span>)
+
+<span class="comment"># while with complex condition</span>
+attempts = <span class="num">0</span>
+max_attempts = <span class="num">3</span>
+success = <span class="kw">False</span>
+
+<span class="kw">while</span> attempts < max_attempts <span class="kw">and not</span> success:
+    password = <span class="fn">input</span>(<span class="str">"Password: "</span>)
+    <span class="kw">if</span> password == <span class="str">"secret"</span>:
+        success = <span class="kw">True</span>
+    <span class="kw">else</span>:
+        attempts += <span class="num">1</span>
+        <span class="fn">print</span>(<span class="str">f"Wrong! </span>{max_attempts - attempts}<span class="str"> attempts left"</span>)</code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️ Infinite Loop Risk</strong>
+    Always ensure your while loop's condition will eventually become False, or that you have a break statement. An infinite loop will freeze your program.
+  </div>
+
+  <!-- ─── BREAK / CONTINUE / PASS ─── -->
+  <h2 id="control">6. break / continue / pass</h2>
+
+  <div class="concept-box">
+    <h3>break — exit the loop immediately</h3>
+    <pre><code><span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> i == <span class="num">5</span>:
+        <span class="kw">break</span>
+    <span class="fn">print</span>(i)
+<span class="comment"># Prints: 0 1 2 3 4</span></code></pre>
+  </div>
+
+  <div class="concept-box">
+    <h3>continue — skip current iteration, go to next</h3>
+    <pre><code><span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> i % <span class="num">2</span> == <span class="num">0</span>:
+        <span class="kw">continue</span>   <span class="comment"># Skip even numbers</span>
+    <span class="fn">print</span>(i)
+<span class="comment"># Prints: 1 3 5 7 9</span></code></pre>
+  </div>
+
+  <div class="concept-box">
+    <h3>pass — do nothing (placeholder)</h3>
+    <pre><code><span class="comment"># Useful when Python requires a block but you have nothing yet</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="kw">pass</span>   <span class="comment"># TODO: implement later</span>
+
+<span class="kw">if</span> condition:
+    <span class="kw">pass</span>   <span class="comment"># Intentionally empty
+
+class MyClass:
+    pass   </span><span class="comment"># Empty class body</span></code></pre>
+  </div>
+
+  <!-- ─── NESTED LOOPS ─── -->
+  <h2 id="nested">7. Nested Loops</h2>
+  <pre><code><span class="comment"># Multiplication table</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">4</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">4</span>):
+        <span class="fn">print</span>(<span class="str">f"</span>{i}<span class="str">x</span>{j}<span class="str">=</span>{i*j}<span class="str">"</span>, end=<span class="str">"  "</span>)
+    <span class="fn">print</span>()   <span class="comment"># newline after each row</span>
+
+<span class="comment"># break only exits the INNERMOST loop</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+        <span class="kw">if</span> j == <span class="num">1</span>:
+            <span class="kw">break</span>        <span class="comment"># Only breaks inner loop</span>
+        <span class="fn">print</span>(<span class="str">f"i=</span>{i}<span class="str">, j=</span>{j}<span class="str">"</span>)
+
+<span class="comment"># To break out of nested loops, use a flag or a function</span>
+<span class="fn">found</span> = <span class="kw">False</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+        <span class="kw">if</span> i * j == <span class="num">42</span>:
+            found = <span class="kw">True</span>
+            <span class="kw">break</span>
+    <span class="kw">if</span> found:
+        <span class="kw">break</span></code></pre>
+
+  <h3>Iterating 2D structures (very common in ML)</h3>
+  <pre><code><span class="comment"># Matrix (list of lists)</span>
+matrix = [
+    [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>],
+    [<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>],
+    [<span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>]
+]
+
+<span class="kw">for</span> row <span class="kw">in</span> matrix:
+    <span class="kw">for</span> val <span class="kw">in</span> row:
+        <span class="fn">print</span>(val, end=<span class="str">" "</span>)
+    <span class="fn">print</span>()
+
+<span class="comment"># Get element at position</span>
+<span class="fn">print</span>(matrix[<span class="num">1</span>][<span class="num">2</span>])   <span class="comment"># 6 (row 1, col 2)</span></code></pre>
+
+  <!-- ─── COMMON MISTAKES ─── -->
+  <h2 id="mistakes">8. Common Mistakes</h2>
+
+  <div class="callout danger">
+    <strong>❌ Modifying a list while iterating over it</strong>
+    <pre style="margin:8px 0 0"><code>nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+<span class="kw">for</span> n <span class="kw">in</span> nums:
+    <span class="kw">if</span> n % <span class="num">2</span> == <span class="num">0</span>:
+        nums.remove(n)   <span class="comment"># ❌ Skips elements!</span>
+
+<span class="comment"># Fix: iterate over a copy</span>
+<span class="kw">for</span> n <span class="kw">in</span> nums[:]:
+    <span class="kw">if</span> n % <span class="num">2</span> == <span class="num">0</span>:
+        nums.remove(n)   <span class="comment"># ✅</span>
+
+<span class="comment"># Or better: use a comprehension</span>
+nums = [n <span class="kw">for</span> n <span class="kw">in</span> nums <span class="kw">if</span> n % <span class="num">2</span> != <span class="num">0</span>]  <span class="comment"># ✅</span></code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Using range(len(list)) when you don't need the index</strong>
+    <pre style="margin:8px 0 0"><code><span class="comment"># Bad — C-style</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(fruits)):
+    <span class="fn">print</span>(fruits[i])
+
+<span class="comment"># Good — Pythonic</span>
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(fruit)
+
+<span class="comment"># If you need both index and value:</span>
+<span class="kw">for</span> i, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(i, fruit)</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Forgetting that range() is exclusive on the end</strong>
+    <pre style="margin:8px 0 0"><code><span class="fn">range</span>(<span class="num">1</span>, <span class="num">10</span>)   <span class="comment"># 1 to 9, NOT 10</span>
+<span class="fn">range</span>(<span class="num">5</span>)       <span class="comment"># 0 to 4, NOT 5</span></code></pre>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ IndentationError is a real error</strong>
+    Python is strict about indentation. Always use 4 spaces (not tabs). Most editors handle this automatically.
+  </div>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What is the difference between <code>break</code> and <code>continue</code>?</li>
+      <li>When does the <code>else</code> block of a <code>for</code> loop run?</li>
+      <li>What does <code>range(5, 20, 3)</code> produce?</li>
+      <li>You have a list <code>[1,2,3,4,5]</code>. Write a loop that prints only odd numbers using <code>continue</code>.</li>
+      <li>Why is <code>for i in range(len(lst))</code> considered un-Pythonic? What's the alternative?</li>
+      <li>If you have nested loops and want to exit both from inside the inner loop, what are your options?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

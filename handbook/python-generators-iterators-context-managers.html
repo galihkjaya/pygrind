@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generators, Iterators &amp; Context Managers - Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; border: 0; padding: 0; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 280px; max-width: 960px; padding: 48px 52px 88px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 750; color: #f1f5f9; margin-bottom: 8px; line-height: 1.2; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; text-transform: uppercase; letter-spacing: .5px; }
+  h2 { font-size: 22px; font-weight: 650; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 650; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  .concept-box p:last-child, .callout p:last-child { margin-bottom: 0; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code, td code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { color: #7c85b3; font-size: 13px; }
+  .file { color:#86efac; }
+  @media (max-width: 850px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 2 · Intermediate</span>
+    <h2>Python Handbook</h2>
+  </div>
+  <nav><a href="python-oop.html">9. OOP</a><a href="python-generators-iterators-context-managers.html" class="active">10. Generators, Iterators & Context Managers</a><a href="python-functional-tools.html">11. Functional Tools</a><a href="python-standard-library.html">12. Standard Library</a><a href="python-type-hints-dataclasses.html">13. Type Hints & Dataclasses</a><a href="python-asyncio-async-await.html">14. Async Python</a><a href="python-testing-debugging.html">15. Testing & Debugging</a><a href="python-packaging-project-structure.html">16. Packaging & Project Structure</a></nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 2 - Intermediate Python › <span>Generators, Iterators &amp; Context Managers</span></div>
+  <h1>Generators, Iterators &amp; Context Managers</h1>
+  <p class="subtitle">Write memory-efficient loops, lazy pipelines, and safe setup-cleanup blocks.</p>
+  <div class="tier-badge">Supports Tier 2 · Tier 3 Problems</div>
+  <div class="section-nav"><a href="#mental-model">Mental model</a><a href="#iterators">Iterators</a><a href="#generators">Generators</a><a href="#generator-expressions">Expressions</a><a href="#pipelines">Pipelines</a><a href="#context-managers">Context managers</a><a href="#contextlib">contextlib</a><a href="#mistakes">Mistakes</a></div>
+  <h2 id="mental-model">1. Mental Model: Pull Values One at a Time</h2><p>Iteration is the protocol that lets Python pull values one by one. A list gives you all values already stored in memory. An iterator gives you the next value only when asked. A generator is a convenient way to create an iterator using <code>yield</code>.</p><table><tr><th>Concept</th><th>Meaning</th><th>Example</th></tr><tr><td>Iterable</td><td>Can produce an iterator</td><td><code>list</code>, <code>dict</code>, <code>str</code>, file objects</td></tr><tr><td>Iterator</td><td>Object with <code>__next__</code></td><td><code>iter([1, 2, 3])</code></td></tr><tr><td>Generator function</td><td>Function that uses <code>yield</code></td><td><code>def count(): yield 1</code></td></tr><tr><td>Context manager</td><td>Controls setup and cleanup</td><td><code>with open(...) as f:</code></td></tr></table><pre><code>numbers = [10, 20, 30]
+iterator = iter(numbers)
+
+print(next(iterator))
+print(next(iterator))
+print(next(iterator))
+# next(iterator) would raise StopIteration</code></pre><div class="callout info"><strong>Why this matters</strong><p>Iterators make pipelines memory efficient. Instead of loading a massive file into a list, you can process one line at a time. That is the difference between “works on my laptop” and “my laptop is now a jet engine”.</p></div><h2 id="iterators">2. Iterables and Iterators</h2><p>An iterable knows how to create an iterator. An iterator remembers where it is. When a <code>for</code> loop runs, Python internally calls <code>iter()</code> once and <code>next()</code> repeatedly until <code>StopIteration</code>.</p><pre><code>class Countdown:
+    def __init__(self, start):
+        self.current = start
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current &lt;= 0:
+            raise StopIteration
+        value = self.current
+        self.current -= 1
+        return value
+
+for n in Countdown(3):
+    print(n)</code></pre><div class="callout warn"><strong>Iterator exhaustion</strong><p>Many iterators can be consumed only once. After you loop through them, they are empty. If you need to reuse values, convert to a list intentionally, but only when the data is small enough.</p></div><pre><code>items = iter([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+print(list(items))  # consumes the iterator
+print(list(items))  # now empty</code></pre><h2 id="generators">3. Generator Functions and yield</h2><p>A generator function looks like a normal function, but it uses <code>yield</code> instead of <code>return</code>. Each time Python reaches <code>yield</code>, it pauses the function and remembers its local state. The next <code>next()</code> resumes from that same point.</p><pre><code>def read_clean_lines(path):
+    with open(path, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                yield line
+
+for line in read_clean_lines(&quot;notes.txt&quot;):
+    print(line.upper())</code></pre><div class="concept-box"><h3>yield vs return</h3><p><code>return</code> ends the function and gives one result. <code>yield</code> pauses the function and can produce many results over time. Use <code>yield</code> when the output is a stream.</p></div><h2 id="generator-expressions">4. Generator Expressions</h2><p>A generator expression is like a list comprehension, but it uses parentheses and does not build the full list immediately. It is lazy.</p><pre><code>numbers = range(1_000_000)
+
+# Builds a full list in memory
+squares_list = [n * n for n in numbers]
+
+# Produces values only when requested
+squares_gen = (n * n for n in numbers)
+
+print(next(squares_gen))
+print(next(squares_gen))</code></pre><div class="callout success"><strong>Good use case</strong><p>Generator expressions are great inside aggregators like <code>sum</code>, <code>any</code>, <code>all</code>, and <code>max</code> when you do not need to store intermediate results.</p></div><pre><code>scores = [85, 92, 70, 100]
+passed_count = sum(1 for score in scores if score &gt;= 75)
+all_valid = all(0 &lt;= score &lt;= 100 for score in scores)
+print(passed_count, all_valid)</code></pre><h2 id="pipelines">5. Streaming Pipelines</h2><p>Generators compose nicely. You can build small steps that each do one thing: read rows, clean rows, parse rows, filter rows, transform rows. This is common in ETL, log processing, and ML preprocessing.</p><pre><code>def tokenize(lines):
+    for line in lines:
+        yield line.lower().split()
+
+def remove_short_words(token_rows, min_len=3):
+    for tokens in token_rows:
+        yield [token for token in tokens if len(token) &gt;= min_len]
+
+lines = [&quot;Python is fun&quot;, &quot;AI needs clean data&quot;]
+pipeline = remove_short_words(tokenize(lines))
+
+for tokens in pipeline:
+    print(tokens)</code></pre><h2 id="context-managers">6. Context Managers and with</h2><p>A context manager handles setup and cleanup. The most common one is <code>open()</code>. It closes the file even if an error happens inside the block. This is safer than manually calling <code>close()</code>.</p><pre><code>with open(&quot;data.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    text = file.read()
+
+# file is already closed here</code></pre><p>You can create your own context manager using a class with <code>__enter__</code> and <code>__exit__</code>.</p><pre><code>class Timer:
+    def __enter__(self):
+        import time
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        import time
+        self.end = time.perf_counter()
+        self.elapsed = self.end - self.start
+        print(f&quot;Elapsed: {self.elapsed:.4f}s&quot;)
+        return False  # do not suppress exceptions
+
+with Timer():
+    total = sum(range(1_000_000))</code></pre><h2 id="contextlib">7. contextlib: Context Managers Without a Class</h2><p>For simple context managers, <code>contextlib.contextmanager</code> lets you write one generator function. Code before <code>yield</code> is setup. Code after <code>yield</code> is cleanup.</p><pre><code>from contextlib import contextmanager
+
+@contextmanager
+def temporary_setting(settings, key, value):
+    old_value = settings.get(key)
+    settings[key] = value
+    try:
+        yield settings
+    finally:
+        if old_value is None:
+            settings.pop(key, None)
+        else:
+            settings[key] = old_value
+
+config = {&quot;debug&quot;: False}
+with temporary_setting(config, &quot;debug&quot;, True):
+    print(config[&quot;debug&quot;])
+print(config[&quot;debug&quot;])</code></pre><h2 id="mistakes">8. Common Mistakes</h2><ul><li>Calling <code>next()</code> too many times without handling <code>StopIteration</code>.</li><li>Expecting a generator to restart after it has been consumed.</li><li>Turning huge generators into lists too early and losing the memory benefit.</li><li>Putting too much logic inside one giant generator instead of composing smaller ones.</li><li>Forgetting that <code>__exit__</code> returning <code>True</code> suppresses exceptions.</li></ul><div class="quiz"><h3>Check Your Understanding</h3><ol><li>What is the difference between an iterable and an iterator?</li><li>Why is <code>yield</code> useful for large files?</li><li>What does it mean that a generator is lazy?</li><li>Why is <code>with open(...)</code> safer than manual open and close?</li><li>When would you use <code>contextlib.contextmanager</code> instead of a class?</li></ol></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modules &amp; Packages — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { font-size: 13px; color: #7c85b3; }
+  .kbd { font-family: 'JetBrains Mono', monospace; background:#0d1117; border:1px solid #2d3148; padding:2px 6px; border-radius:4px; color:#e2e8f0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html" class="active">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Modules &amp; Packages</span></div>
+  <h1>Modules &amp; Packages</h1>
+  <p class="subtitle">Organize Python code into reusable modules, scalable packages, clean imports, and dependency-managed projects.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 · Tier 3 Problems</div>
+
+  <div class="section-nav">
+    <a href="#mental-model">Mental Model</a>
+    <a href="#import-basics">Imports</a>
+    <a href="#local-modules">Local Modules</a>
+    <a href="#main-guard">Main Guard</a>
+    <a href="#search-path">Search Path</a>
+    <a href="#packages">Packages</a>
+    <a href="#relative-imports">Relative Imports</a>
+    <a href="#third-party">Third-Party</a>
+    <a href="#project-structure">Project Structure</a>
+    <a href="#circular-imports">Circular Imports</a>
+    <a href="#mistakes">Mistakes</a>
+    <a href="#reference">Reference</a>
+  </div>
+
+  
+  <h2 id="mental-model">1. Mental Model: Split Code into Reusable Pieces</h2>
+  <p>A module is a Python file you can import. A package is a folder of modules. These let you organize code, reuse logic, avoid giant files, and share functionality across projects. Once your code grows beyond one file, modules stop being optional.</p>
+
+  <div class="concept-box">
+    <h3>Simple definitions</h3>
+    <ul>
+      <li><strong>Module</strong>: one <code>.py</code> file, such as <code>utils.py</code>.</li>
+      <li><strong>Package</strong>: a folder containing modules, usually with <code>__init__.py</code>.</li>
+      <li><strong>Import</strong>: telling Python to load code from another module.</li>
+      <li><strong>Library</strong>: a collection of modules/packages built for reuse.</li>
+    </ul>
+  </div>
+
+  <h2 id="import-basics">2. Import Basics</h2>
+  <p>Python already ships with many standard library modules. You can import them without installing anything.</p>
+
+  <pre><code>import math
+import random
+from datetime import datetime
+
+print(math.sqrt(16))
+print(random.randint(1, 10))
+print(datetime.now())</code></pre>
+
+  <h3>Different import styles</h3>
+  <pre><code># Import the whole module
+import math
+print(math.pi)
+
+# Import specific names
+from math import pi, sqrt
+print(pi)
+print(sqrt(25))
+
+# Alias a module
+import statistics as stats
+print(stats.mean([10, 20, 30]))
+
+# Alias a specific function
+from pathlib import Path as P
+print(P.cwd())</code></pre>
+
+  <table>
+    <tr><th>Style</th><th>Good for</th><th>Tradeoff</th></tr>
+    <tr><td><code>import module</code></td><td>Clarity</td><td>Need module prefix</td></tr>
+    <tr><td><code>from module import name</code></td><td>Frequently used functions</td><td>Can hide origin</td></tr>
+    <tr><td><code>import module as alias</code></td><td>Common conventions</td><td>Alias must be obvious</td></tr>
+    <tr><td><code>from module import *</code></td><td>Almost never</td><td>Pollutes namespace</td></tr>
+  </table>
+
+  <div class="callout danger">
+    <strong>❌ Avoid wildcard imports</strong>
+    <code>from module import *</code> makes it hard to know where names came from and can overwrite existing names. It looks convenient, then becomes debugging DLC.
+  </div>
+
+  <h2 id="local-modules">3. Your Own Local Modules</h2>
+  <p>If you create a file called <code>calculator.py</code>, you can import it from another file in the same folder.</p>
+
+  <pre><code># calculator.py
+
+def add(a, b):
+    return a + b
+
+
+def multiply(a, b):
+    return a * b</code></pre>
+
+  <pre><code># main.py
+
+import calculator
+
+print(calculator.add(3, 4))
+print(calculator.multiply(5, 6))</code></pre>
+
+  <h3>Import specific functions from your module</h3>
+  <pre><code># main.py
+
+from calculator import add, multiply
+
+print(add(3, 4))
+print(multiply(5, 6))</code></pre>
+
+  <div class="callout info">
+    <strong>Keep modules focused</strong>
+    A good module has one clear responsibility: validation functions, file helpers, feature engineering, math utilities, API clients, and so on.
+  </div>
+
+  <h2 id="main-guard">4. The __name__ == "__main__" Pattern</h2>
+  <p>When Python runs a file directly, its <code>__name__</code> is <code>"__main__"</code>. When the file is imported, its <code>__name__</code> is the module name. This pattern prevents test/demo code from running during import.</p>
+
+  <pre><code># greetings.py
+
+def greet(name):
+    return f&quot;Hello, {name}!&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    # This only runs when you execute: python greetings.py
+    print(greet(&quot;Alya&quot;))</code></pre>
+
+  <pre><code># main.py
+
+from greetings import greet
+
+# The demo print inside greetings.py does not run here
+print(greet(&quot;Bima&quot;))</code></pre>
+
+  <h2 id="search-path">5. How Python Finds Modules</h2>
+  <p>When you import something, Python searches through a list of locations. The first matching name wins.</p>
+
+  <pre><code>import sys
+
+for path in sys.path:
+    print(path)</code></pre>
+
+  <p>The important beginner idea: Python usually checks your current project folder first. This means bad file names can accidentally shadow standard library modules.</p>
+
+  <div class="callout danger">
+    <strong>❌ Do not name your file like a standard library module</strong>
+    Avoid names like <code>random.py</code>, <code>json.py</code>, <code>csv.py</code>, <code>math.py</code>, or <code>datetime.py</code>. If you do, Python may import your file instead of the real library.
+  </div>
+
+  <h2 id="packages">6. Packages: Folders of Modules</h2>
+  <p>A package is a folder that groups related modules. This is how you scale from scripts into maintainable projects.</p>
+
+  <pre><code>project/
+├── main.py
+└── myapp/
+    ├── __init__.py
+    ├── validators.py
+    ├── file_utils.py
+    └── features.py</code></pre>
+
+  <pre><code># myapp/validators.py
+
+def is_valid_score(score):
+    return 0 &lt;= score &lt;= 100</code></pre>
+
+  <pre><code># myapp/features.py
+
+from myapp.validators import is_valid_score
+
+
+def normalize_score(score):
+    if not is_valid_score(score):
+        raise ValueError(&quot;Invalid score&quot;)
+    return score / 100</code></pre>
+
+  <pre><code># main.py
+
+from myapp.features import normalize_score
+
+print(normalize_score(85))</code></pre>
+
+  <h3>What is __init__.py?</h3>
+  <p><code>__init__.py</code> marks a folder as a regular Python package and can expose selected names for easier imports. It can be empty, especially at the beginning.</p>
+
+  <pre><code># myapp/__init__.py
+
+from myapp.features import normalize_score
+
+# main.py can now do:
+# from myapp import normalize_score</code></pre>
+
+  <h2 id="relative-imports">7. Absolute vs Relative Imports</h2>
+  <p>Absolute imports start from the project/package root. Relative imports use dots to refer to nearby modules inside the same package.</p>
+
+  <div class="two-col">
+    <div class="concept-box">
+      <h3>Absolute import</h3>
+      <pre><code>from myapp.validators import is_valid_score</code></pre>
+      <p class="mini">Usually clearer and recommended for most beginner/intermediate projects.</p>
+    </div>
+    <div class="concept-box">
+      <h3>Relative import</h3>
+      <pre><code>from .validators import is_valid_score</code></pre>
+      <p class="mini">Only works inside packages. Useful for internal package modules.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Relative imports can fail when running files directly</strong>
+    If a file inside a package uses relative imports, run the package from the project root instead of running that internal file directly.
+  </div>
+
+  <h2 id="third-party">8. Third-Party Packages, pip, and Virtual Environments</h2>
+  <p>The standard library is built in. Third-party packages must be installed. For real projects, install them inside a virtual environment so each project gets its own dependency space.</p>
+
+  <pre><code># Create virtual environment
+python -m venv .venv
+
+# Activate on Windows
+.venv\Scripts\activate
+
+# Activate on macOS/Linux
+source .venv/bin/activate
+
+# Install package
+pip install requests
+
+# Save dependencies
+pip freeze &gt; requirements.txt
+
+# Reinstall dependencies later
+pip install -r requirements.txt</code></pre>
+
+  <h3>Using installed packages</h3>
+  <pre><code>import requests
+
+response = requests.get(&quot;https://example.com&quot;)
+print(response.status_code)</code></pre>
+
+  <div class="callout info">
+    <strong>Project hygiene</strong>
+    Commit <code>requirements.txt</code>, but usually do not commit the <code>.venv</code> folder. The requirements file is the recipe; the virtual environment is the cooked food.
+  </div>
+
+  <h2 id="project-structure">9. A Clean Beginner Project Structure</h2>
+  <p>This structure works well for small Python learning projects, data scripts, and backend prototypes.</p>
+
+  <pre><code>python-learning-project/
+├── README.md
+├── requirements.txt
+├── main.py
+├── data/
+│   └── raw.csv
+├── outputs/
+│   └── summary.json
+├── src/
+│   ├── __init__.py
+│   ├── io_utils.py
+│   ├── preprocessing.py
+│   └── metrics.py
+└── tests/
+    └── test_metrics.py</code></pre>
+
+  <h3>Example responsibilities</h3>
+  <table>
+    <tr><th>File</th><th>Responsibility</th></tr>
+    <tr><td><code>main.py</code></td><td>Runs the workflow</td></tr>
+    <tr><td><code>io_utils.py</code></td><td>Read/write files</td></tr>
+    <tr><td><code>preprocessing.py</code></td><td>Clean and transform data</td></tr>
+    <tr><td><code>metrics.py</code></td><td>Evaluation calculations</td></tr>
+    <tr><td><code>tests/</code></td><td>Small checks for correctness</td></tr>
+  </table>
+
+  <h2 id="circular-imports">10. Circular Imports</h2>
+  <p>A circular import happens when two modules import each other. This often means your code responsibilities are tangled.</p>
+
+  <pre><code># users.py
+from emails import send_welcome_email
+
+
+def create_user(email):
+    send_welcome_email(email)
+
+# emails.py
+from users import create_user  # circular import risk</code></pre>
+
+  <h3>How to fix the design</h3>
+  <ul>
+    <li>Move shared logic into a third module, such as <code>services.py</code> or <code>utils.py</code>.</li>
+    <li>Keep low-level modules independent from high-level workflow modules.</li>
+    <li>Import inside a function only as a temporary workaround, not your default design.</li>
+    <li>Review whether each module has a clear responsibility.</li>
+  </ul>
+
+  <h2 id="mistakes">11. Common Mistakes</h2>
+  <div class="callout danger">
+    <strong>❌ Running package modules from the wrong location</strong>
+    <p>If imports fail, check your working directory and run from the project root. Many import bugs are secretly “you are standing in the wrong folder” bugs.</p>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Putting too much code at import time</strong>
+    <pre><code># Bad: this runs immediately when imported
+print(&quot;Loading data...&quot;)
+data = load_huge_file()
+
+# Better: put work inside a function
+def main():
+    data = load_huge_file()
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Importing from deep internal paths too often</strong>
+    If users of your package must import from five folders deep, expose stable functions in <code>__init__.py</code> or redesign the structure.
+  </div>
+
+  <h2 id="reference">12. Quick Reference</h2>
+  <table>
+    <tr><th>Goal</th><th>Code</th></tr>
+    <tr><td>Import module</td><td><code>import math</code></td></tr>
+    <tr><td>Import function</td><td><code>from math import sqrt</code></td></tr>
+    <tr><td>Alias package</td><td><code>import numpy as np</code></td></tr>
+    <tr><td>Run code only as script</td><td><code>if __name__ == "__main__":</code></td></tr>
+    <tr><td>Create package</td><td><code>folder/__init__.py</code></td></tr>
+    <tr><td>Absolute import</td><td><code>from myapp.utils import helper</code></td></tr>
+    <tr><td>Relative import</td><td><code>from .utils import helper</code></td></tr>
+    <tr><td>Create venv</td><td><code>python -m venv .venv</code></td></tr>
+    <tr><td>Install package</td><td><code>pip install package_name</code></td></tr>
+  </table>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What is the difference between a module and a package?</li>
+      <li>Why is <code>if __name__ == "__main__"</code> useful?</li>
+      <li>Why should you avoid naming a file <code>json.py</code>?</li>
+      <li>When would you use a virtual environment?</li>
+      <li>What design smell usually causes circular imports?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

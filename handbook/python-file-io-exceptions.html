@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File I/O &amp; Exception Handling — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { font-size: 13px; color: #7c85b3; }
+  .kbd { font-family: 'JetBrains Mono', monospace; background:#0d1117; border:1px solid #2d3148; padding:2px 6px; border-radius:4px; color:#e2e8f0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html" class="active">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>File I/O &amp; Exception Handling</span></div>
+  <h1>File I/O &amp; Exception Handling</h1>
+  <p class="subtitle">Read, write, validate, and protect your Python programs from messy real-world files and runtime errors.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 · Tier 3 Problems</div>
+
+  <div class="section-nav">
+    <a href="#mental-model">Mental Model</a>
+    <a href="#paths">Paths</a>
+    <a href="#open-read">Read</a>
+    <a href="#write-append">Write</a>
+    <a href="#csv-json">CSV/JSON</a>
+    <a href="#exceptions">Exceptions</a>
+    <a href="#safe-patterns">Safe Patterns</a>
+    <a href="#custom-errors">Custom Errors</a>
+    <a href="#debugging">Debugging</a>
+    <a href="#mistakes">Mistakes</a>
+    <a href="#reference">Reference</a>
+  </div>
+
+  
+  <h2 id="mental-model">1. Mental Model: Programs Talk to the Outside World</h2>
+  <p>Variables disappear when a program ends. Files let your program store data permanently, read existing data, exchange data with other tools, and recover from errors. Exception handling lets your program fail gracefully instead of exploding like a group project one hour before deadline.</p>
+
+  <div class="concept-box">
+    <h3>Two separate skills</h3>
+    <ul>
+      <li><strong>File I/O</strong>: opening, reading, writing, appending, and closing files.</li>
+      <li><strong>Exception handling</strong>: deciding what should happen when something goes wrong.</li>
+    </ul>
+  </div>
+
+  <h2 id="paths">2. Paths and Files</h2>
+  <p>A file path tells Python where the file lives. You can use relative paths from your current working directory or absolute paths from the root of your system.</p>
+
+  <pre><code>from pathlib import Path
+
+# Current working directory
+print(Path.cwd())
+
+# Relative path
+notes_path = Path(&quot;notes.txt&quot;)
+
+# Folder + file path
+project_dir = Path(&quot;data&quot;)
+users_path = project_dir / &quot;users.csv&quot;
+
+print(users_path)</code></pre>
+
+  <div class="callout info">
+    <strong>Use pathlib for modern Python</strong>
+    <code>pathlib.Path</code> makes path handling cleaner across Windows, macOS, and Linux. It also avoids messy manual string joining.
+  </div>
+
+  <h2 id="open-read">3. Opening and Reading Files</h2>
+  <p>The safest beginner pattern is using <code>with open(...)</code>. It automatically closes the file after the block, even when an error happens.</p>
+
+  <pre><code># Read the entire file as one string
+with open(&quot;notes.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    content = file.read()
+
+print(content)</code></pre>
+
+  <h3>Read line by line</h3>
+  <pre><code># Good for large files because it does not load everything at once
+with open(&quot;notes.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    for line in file:
+        clean_line = line.strip()
+        print(clean_line)</code></pre>
+
+  <h3>Read all lines into a list</h3>
+  <pre><code>with open(&quot;notes.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    lines = file.readlines()
+
+print(lines)</code></pre>
+
+  <table>
+    <tr><th>Method</th><th>Returns</th><th>Use when</th></tr>
+    <tr><td><code>read()</code></td><td>One string</td><td>The file is small and you want all content</td></tr>
+    <tr><td><code>readline()</code></td><td>One line</td><td>You only need the next line</td></tr>
+    <tr><td><code>readlines()</code></td><td>List of lines</td><td>You need all lines as a list</td></tr>
+    <tr><td>Loop over file</td><td>One line at a time</td><td>The file can be large</td></tr>
+  </table>
+
+  <h2 id="write-append">4. Writing and Appending Files</h2>
+  <p>Writing modes determine whether Python creates, overwrites, or appends to a file. This is where many beginners accidentally Thanos-snap their data.</p>
+
+  <pre><code># &quot;w&quot; creates a new file or overwrites an existing file
+with open(&quot;output.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file:
+    file.write(&quot;Hello, Python!
+&quot;)
+    file.write(&quot;This is a new file.
+&quot;)
+
+# &quot;a&quot; appends to the end of a file
+with open(&quot;output.txt&quot;, &quot;a&quot;, encoding=&quot;utf-8&quot;) as file:
+    file.write(&quot;This line is appended.
+&quot;)</code></pre>
+
+  <h3>Create folders before writing</h3>
+  <pre><code>from pathlib import Path
+
+output_dir = Path(&quot;reports&quot;)
+output_dir.mkdir(exist_ok=True)
+
+report_path = output_dir / &quot;summary.txt&quot;
+
+with open(report_path, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file:
+    file.write(&quot;Training summary goes here.
+&quot;)</code></pre>
+
+  <table>
+    <tr><th>Mode</th><th>Meaning</th><th>Danger level</th></tr>
+    <tr><td><code>"r"</code></td><td>Read only</td><td>Safe, but file must exist</td></tr>
+    <tr><td><code>"w"</code></td><td>Write, overwrite if exists</td><td>High</td></tr>
+    <tr><td><code>"a"</code></td><td>Append to end</td><td>Medium</td></tr>
+    <tr><td><code>"x"</code></td><td>Create new file, fail if exists</td><td>Safe for avoiding overwrite</td></tr>
+    <tr><td><code>"rb"</code>/<code>"wb"</code></td><td>Binary read/write</td><td>For images, PDFs, models, etc.</td></tr>
+  </table>
+
+  <h2 id="csv-json">5. CSV and JSON: Files You Will Actually Use</h2>
+  <p>Plain text files are useful, but CSV and JSON are the daily drivers for data and APIs.</p>
+
+  <h3>CSV: rows and columns</h3>
+  <pre><code>import csv
+
+rows = [
+    {&quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88},
+    {&quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 76},
+]
+
+with open(&quot;scores.csv&quot;, &quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as file:
+    writer = csv.DictWriter(file, fieldnames=[&quot;name&quot;, &quot;score&quot;])
+    writer.writeheader()
+    writer.writerows(rows)
+
+with open(&quot;scores.csv&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        print(row[&quot;name&quot;], row[&quot;score&quot;])</code></pre>
+
+  <h3>JSON: nested data</h3>
+  <pre><code>import json
+
+config = {
+    &quot;model&quot;: &quot;logistic_regression&quot;,
+    &quot;threshold&quot;: 0.5,
+    &quot;features&quot;: [&quot;age&quot;, &quot;income&quot;, &quot;score&quot;],
+}
+
+with open(&quot;config.json&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file:
+    json.dump(config, file, indent=2)
+
+with open(&quot;config.json&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+    loaded_config = json.load(file)
+
+print(loaded_config[&quot;features&quot;])</code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️ CSV values are read as strings</strong>
+    When you read from CSV, numbers often arrive as text. Convert them manually before doing math.
+    <pre><code>score_text = &quot;88&quot;
+score = int(score_text)</code></pre>
+  </div>
+
+  <h2 id="exceptions">6. Exceptions: Handling Errors Gracefully</h2>
+  <p>An exception is Python saying: “I cannot continue normally.” Without handling, your program stops. With handling, you can show a useful message, use a fallback, retry, or clean up resources.</p>
+
+  <pre><code>try:
+    number = int(input(&quot;Enter a number: &quot;))
+    result = 100 / number
+except ValueError:
+    print(&quot;Please enter a valid integer.&quot;)
+except ZeroDivisionError:
+    print(&quot;Cannot divide by zero.&quot;)
+else:
+    print(&quot;Result:&quot;, result)
+finally:
+    print(&quot;Done.&quot;)</code></pre>
+
+  <table>
+    <tr><th>Block</th><th>Runs when?</th><th>Purpose</th></tr>
+    <tr><td><code>try</code></td><td>Always attempted first</td><td>Put risky code here</td></tr>
+    <tr><td><code>except</code></td><td>Only if matching error happens</td><td>Recover or explain</td></tr>
+    <tr><td><code>else</code></td><td>Only if no exception happened</td><td>Code that depends on success</td></tr>
+    <tr><td><code>finally</code></td><td>Always</td><td>Cleanup</td></tr>
+  </table>
+
+  <h2 id="safe-patterns">7. Safe File Patterns</h2>
+  <h3>Pattern A: Read file if it exists</h3>
+  <pre><code>from pathlib import Path
+
+path = Path(&quot;notes.txt&quot;)
+
+if path.exists():
+    content = path.read_text(encoding=&quot;utf-8&quot;)
+    print(content)
+else:
+    print(&quot;notes.txt does not exist yet.&quot;)</code></pre>
+
+  <h3>Pattern B: Try reading JSON with useful errors</h3>
+  <pre><code>import json
+from pathlib import Path
+
+path = Path(&quot;config.json&quot;)
+
+try:
+    with open(path, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+        config = json.load(file)
+except FileNotFoundError:
+    print(&quot;Config file is missing.&quot;)
+    config = {}
+except json.JSONDecodeError:
+    print(&quot;Config file is not valid JSON.&quot;)
+    config = {}
+
+print(config)</code></pre>
+
+  <h3>Pattern C: Validate data and raise your own error</h3>
+  <pre><code>def load_threshold(config):
+    threshold = config.get(&quot;threshold&quot;)
+
+    if threshold is None:
+        raise ValueError(&quot;Missing threshold in config&quot;)
+
+    if not 0 &lt;= threshold &lt;= 1:
+        raise ValueError(&quot;Threshold must be between 0 and 1&quot;)
+
+    return threshold</code></pre>
+
+  <div class="callout info">
+    <strong>Raise exceptions when bad data should not continue</strong>
+    Printing an error is not enough if the program would continue with wrong assumptions. Raise an exception when continuing would produce misleading results.
+  </div>
+
+  <h2 id="custom-errors">8. Custom Exceptions</h2>
+  <p>For larger projects, custom exceptions make error meaning clearer. They help separate domain errors from generic Python errors.</p>
+
+  <pre><code>class InvalidScoreError(Exception):
+    pass
+
+
+def normalize_score(score):
+    if not 0 &lt;= score &lt;= 100:
+        raise InvalidScoreError(&quot;Score must be between 0 and 100&quot;)
+    return score / 100
+
+try:
+    print(normalize_score(120))
+except InvalidScoreError as error:
+    print(&quot;Invalid score:&quot;, error)</code></pre>
+
+  <h2 id="debugging">9. Debugging File and Exception Problems</h2>
+  <ul>
+    <li>Print <code>Path.cwd()</code> when Python “cannot find” your file.</li>
+    <li>Use <code>encoding="utf-8"</code> consistently for text files.</li>
+    <li>Use <code>newline=""</code> when writing CSV files.</li>
+    <li>Catch specific exceptions first. Broad <code>except Exception</code> should be rare.</li>
+    <li>Do not hide errors silently. At least log or print a meaningful message.</li>
+  </ul>
+
+  <h2 id="mistakes">10. Common Mistakes</h2>
+  <div class="callout danger">
+    <strong>❌ Forgetting that "w" overwrites files</strong>
+    <pre><code># This destroys existing content if the file already exists
+with open(&quot;important.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file:
+    file.write(&quot;new content&quot;)
+
+# Use &quot;a&quot; to append, or &quot;x&quot; to fail if file exists</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Catching every exception and doing nothing</strong>
+    <pre><code>try:
+    risky_operation()
+except Exception:
+    pass  # Bad: hides the problem
+
+# Better
+try:
+    risky_operation()
+except ValueError as error:
+    print(&quot;Invalid value:&quot;, error)</code></pre>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Opening files without with</strong>
+    <p>You can manually close files, but <code>with</code> is safer and cleaner. Use it as your default.</p>
+  </div>
+
+  <h2 id="reference">11. Quick Reference</h2>
+  <table>
+    <tr><th>Goal</th><th>Code</th></tr>
+    <tr><td>Read text</td><td><code>Path("file.txt").read_text(encoding="utf-8")</code></td></tr>
+    <tr><td>Write text</td><td><code>Path("file.txt").write_text(text, encoding="utf-8")</code></td></tr>
+    <tr><td>Safe open</td><td><code>with open(path, "r", encoding="utf-8") as f:</code></td></tr>
+    <tr><td>Read JSON</td><td><code>json.load(file)</code></td></tr>
+    <tr><td>Write JSON</td><td><code>json.dump(data, file, indent=2)</code></td></tr>
+    <tr><td>Catch specific error</td><td><code>except FileNotFoundError:</code></td></tr>
+    <tr><td>Raise error</td><td><code>raise ValueError("message")</code></td></tr>
+    <tr><td>Create folder</td><td><code>Path("folder").mkdir(exist_ok=True)</code></td></tr>
+  </table>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>Why is <code>with open(...)</code> safer than manually opening and closing a file?</li>
+      <li>What is the difference between <code>"w"</code>, <code>"a"</code>, and <code>"x"</code>?</li>
+      <li>Why should you catch specific exceptions instead of every exception?</li>
+      <li>When would you raise your own <code>ValueError</code>?</li>
+      <li>Why might numbers from CSV need to be converted before analysis?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

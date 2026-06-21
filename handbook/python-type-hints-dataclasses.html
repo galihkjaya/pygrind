@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Type Hints &amp; Dataclasses - Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; border: 0; padding: 0; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 280px; max-width: 960px; padding: 48px 52px 88px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 750; color: #f1f5f9; margin-bottom: 8px; line-height: 1.2; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; text-transform: uppercase; letter-spacing: .5px; }
+  h2 { font-size: 22px; font-weight: 650; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 650; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  .concept-box p:last-child, .callout p:last-child { margin-bottom: 0; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code, td code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { color: #7c85b3; font-size: 13px; }
+  .file { color:#86efac; }
+  @media (max-width: 850px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 2 · Intermediate</span>
+    <h2>Python Handbook</h2>
+  </div>
+  <nav><a href="python-oop.html">9. OOP</a><a href="python-generators-iterators-context-managers.html">10. Generators, Iterators & Context Managers</a><a href="python-functional-tools.html">11. Functional Tools</a><a href="python-standard-library.html">12. Standard Library</a><a href="python-type-hints-dataclasses.html" class="active">13. Type Hints & Dataclasses</a><a href="python-asyncio-async-await.html">14. Async Python</a><a href="python-testing-debugging.html">15. Testing & Debugging</a><a href="python-packaging-project-structure.html">16. Packaging & Project Structure</a></nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 2 - Intermediate Python › <span>Type Hints &amp; Dataclasses</span></div>
+  <h1>Type Hints &amp; Dataclasses</h1>
+  <p class="subtitle">Write self-documenting Python with safer function contracts and clean data containers.</p>
+  <div class="tier-badge">Supports Tier 2 · Tier 3 Problems</div>
+  <div class="section-nav"><a href="#mental-model">Mental model</a><a href="#basics">Basics</a><a href="#advanced">Advanced types</a><a href="#aliases">Aliases</a><a href="#dataclasses">Dataclasses</a><a href="#field">field</a><a href="#post-init">post init</a><a href="#patterns">Patterns</a><a href="#mistakes">Mistakes</a></div>
+  <h2 id="mental-model">1. Mental Model: Hints for Humans and Tools</h2><p>Type hints do not normally change how Python runs. They make code easier to read, easier to review, easier to autocomplete, and easier to check with tools like mypy or pyright. Think of them as documentation that your editor can understand.</p><pre><code>def greet(name: str) -&gt; str:
+    return f&quot;Hello, {name}!&quot;
+
+message = greet(&quot;Galih&quot;)
+print(message)</code></pre><div class="callout info"><strong>Runtime vs static checking</strong><p>Python will still run many type-wrong programs unless you use a checker. Type hints are a contract for developers and tools, not a magical force field.</p></div><h2 id="basics">2. Basic Type Hints</h2><table><tr><th>Type</th><th>Example</th></tr><tr><td>Primitive</td><td><code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code></td></tr><tr><td>Containers</td><td><code>list[str]</code>, <code>dict[str, int]</code>, <code>set[int]</code></td></tr><tr><td>Optional value</td><td><code>str | None</code></td></tr><tr><td>Multiple possible types</td><td><code>int | float</code></td></tr><tr><td>No return value</td><td><code>-> None</code></td></tr></table><pre><code>def average(values: list[float]) -&gt; float:
+    if not values:
+        raise ValueError(&quot;values cannot be empty&quot;)
+    return sum(values) / len(values)
+
+def find_user(user_id: int) -&gt; dict[str, str] | None:
+    if user_id == 1:
+        return {&quot;name&quot;: &quot;Alya&quot;, &quot;role&quot;: &quot;admin&quot;}
+    return None</code></pre><h2 id="advanced">3. Useful Types from typing</h2><p>The <code>typing</code> module gives more expressive types. Use the most general type that your function truly needs. If you only loop over values, accept <code>Iterable</code>. If you need indexing, accept <code>Sequence</code>. If you need to mutate, accept <code>list</code>.</p><pre><code>from collections.abc import Callable, Iterable, Sequence
+
+def apply_all(values: Iterable[int], fn: Callable[[int], int]) -&gt; list[int]:
+    return [fn(value) for value in values]
+
+def first(values: Sequence[str]) -&gt; str:
+    return values[0]
+
+print(apply_all([1, 2, 3], lambda x: x * 2))</code></pre><table><tr><th>Type</th><th>Use when</th></tr><tr><td><code>Iterable[T]</code></td><td>You only loop over values</td></tr><tr><td><code>Sequence[T]</code></td><td>You need order, length, or indexing</td></tr><tr><td><code>Mapping[K, V]</code></td><td>You read dictionary-like objects</td></tr><tr><td><code>Callable[[A], B]</code></td><td>You accept a function</td></tr><tr><td><code>Any</code></td><td>You explicitly give up type checking for that value</td></tr></table><h2 id="aliases">4. Type Aliases and Literal Values</h2><p>Type aliases make complex types readable. <code>Literal</code> restricts a value to specific strings or numbers, useful for modes and configuration.</p><pre><code>from typing import Literal, TypeAlias
+
+UserId: TypeAlias = int
+Role: TypeAlias = Literal[&quot;student&quot;, &quot;mentor&quot;, &quot;admin&quot;]
+
+UserRecord: TypeAlias = dict[str, str | int]
+
+def set_role(user_id: UserId, role: Role) -&gt; None:
+    print(f&quot;Setting user {user_id} to {role}&quot;)
+
+set_role(10, &quot;mentor&quot;)</code></pre><h2 id="dataclasses">5. Dataclasses: Classes for Data Records</h2><p>A dataclass removes repetitive boilerplate from classes that mainly store data. It automatically creates <code>__init__</code>, <code>__repr__</code>, and equality methods by default.</p><pre><code>from dataclasses import dataclass
+
+@dataclass
+class Student:
+    name: str
+    score: float
+    passed: bool = False
+
+student = Student(name=&quot;Alya&quot;, score=88.5)
+print(student)
+print(student.name)</code></pre><h2 id="field">6. field(), default_factory, frozen, slots</h2><p>Use <code>field(default_factory=...)</code> for mutable defaults. Use <code>frozen=True</code> for immutable records. Use <code>slots=True</code> to reduce memory and prevent accidental new attributes.</p><pre><code>from dataclasses import dataclass, field
+
+@dataclass(slots=True)
+class Course:
+    title: str
+    lessons: list[str] = field(default_factory=list)
+
+    def add_lesson(self, lesson: str) -&gt; None:
+        self.lessons.append(lesson)
+
+course = Course(&quot;Intermediate Python&quot;)
+course.add_lesson(&quot;Type Hints&quot;)
+print(course.lessons)</code></pre><pre><code>from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+
+p = Point(1.0, 2.0)
+# p.x = 10.0  # would raise an error because frozen=True</code></pre><h2 id="post-init">7. __post_init__ and Derived Values</h2><p><code>__post_init__</code> runs after the dataclass-generated <code>__init__</code>. Use it for validation and derived fields.</p><pre><code>from dataclasses import dataclass, field
+
+@dataclass
+class ExamResult:
+    student: str
+    score: float
+    grade: str = field(init=False)
+
+    def __post_init__(self):
+        if not 0 &lt;= self.score &lt;= 100:
+            raise ValueError(&quot;score must be between 0 and 100&quot;)
+        self.grade = &quot;pass&quot; if self.score &gt;= 75 else &quot;fail&quot;
+
+result = ExamResult(&quot;Bima&quot;, 82)
+print(result.grade)</code></pre><h2 id="patterns">8. Practical Patterns</h2><ul><li>Use dataclasses for config objects, parsed records, DTOs, and feature rows.</li><li>Use type hints on public functions first. Internal tiny helpers can be typed later.</li><li>Use <code>str | None</code> only when <code>None</code> is truly allowed.</li><li>Avoid <code>Any</code> unless you have a clear reason.</li><li>Use <code>field(default_factory=list)</code> for lists and dictionaries.</li></ul><div class="callout danger"><strong>Classic bug</strong><p>Never write <code>lessons: list[str] = []</code> inside a dataclass. Mutable defaults should use <code>field(default_factory=list)</code>.</p></div><h2 id="mistakes">9. Common Mistakes</h2><ul><li>Assuming type hints enforce runtime validation automatically.</li><li>Using <code>list</code> when <code>Sequence</code> or <code>Iterable</code> would make the function more flexible.</li><li>Over-typing throwaway scripts while leaving important APIs unclear.</li><li>Using dataclasses for behavior-heavy domain objects that need custom methods and invariants.</li><li>Forgetting to validate external data. JSON from users is not trustworthy just because your dataclass is cute.</li></ul><div class="quiz"><h3>Check Your Understanding</h3><ol><li>What do type hints help with if Python does not enforce them by default?</li><li>When should you use <code>Iterable</code> instead of <code>list</code>?</li><li>Why does a dataclass need <code>default_factory</code> for list defaults?</li><li>What is <code>__post_init__</code> for?</li><li>When would <code>frozen=True</code> be useful?</li></ol></div>
+</div>
+</body>
+</html>

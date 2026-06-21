@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strings & Methods — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; } .kw { color: #c084fc; } .str { color: #86efac; } .num { color: #fbbf24; } .fn { color: #60a5fa; } .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; } .callout.warn strong { color: #f59e0b; } .callout.danger strong { color: #ef4444; } .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><span>Phase 1 · Foundation</span><h2>Python Basics</h2></div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html" class="active">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Strings & Methods</span></div>
+  <h1>Strings & Built-in Methods</h1>
+  <p class="subtitle">Strings are everywhere. Learn to create, slice, search, format, and transform text confidently.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 Problems</div>
+
+  <div class="section-nav">
+    <a href="#creation">Creation</a>
+    <a href="#indexing">Indexing & Slicing</a>
+    <a href="#methods">Methods</a>
+    <a href="#formatting">Formatting</a>
+    <a href="#immutability">Immutability</a>
+    <a href="#encoding">Encoding</a>
+    <a href="#quickref">Quick Ref</a>
+  </div>
+
+  <h2 id="creation">1. Creating Strings</h2>
+  <pre><code><span class="comment"># Single or double quotes (equivalent)</span>
+s1 = <span class="str">'Hello'</span>
+s2 = <span class="str">"World"</span>
+
+<span class="comment"># Use one to avoid escaping the other</span>
+s3 = <span class="str">"It's a great day"</span>
+s4 = <span class="str">'He said "hello"'</span>
+
+<span class="comment"># Triple quotes — multi-line strings</span>
+essay = <span class="str">"""This is a
+multi-line string.
+Preserves whitespace and newlines."""</span>
+
+<span class="comment"># Raw strings — backslash is literal</span>
+path = <span class="str">r"C:\Users\andi\documents"</span>   <span class="comment"># No escape needed</span>
+regex = <span class="str">r"\d+\.\d+"</span>                  <span class="comment"># For regex patterns</span>
+
+<span class="comment"># Byte strings</span>
+b = <span class="str">b"hello"</span>   <span class="comment"># bytes object, not str</span>
+
+<span class="comment"># String repetition and concatenation</span>
+<span class="str">"ha"</span> * <span class="num">3</span>           <span class="comment"># "hahaha"</span>
+<span class="str">"Hello"</span> + <span class="str">" World"</span>  <span class="comment"># "Hello World"</span>
+
+<span class="comment"># len()</span>
+<span class="fn">len</span>(<span class="str">"hello"</span>)   <span class="comment"># 5</span>
+<span class="fn">len</span>(<span class="str">""</span>)       <span class="comment"># 0</span></code></pre>
+
+  <h2 id="indexing">2. Indexing & Slicing</h2>
+  <p>Strings are sequences. You can access individual characters or ranges with indexing and slicing.</p>
+
+  <pre><code>s = <span class="str">"Python"</span>
+<span class="comment">#    P  y  t  h  o  n</span>
+<span class="comment"># +  0  1  2  3  4  5</span>
+<span class="comment"># - -6 -5 -4 -3 -2 -1</span>
+
+<span class="comment"># Indexing</span>
+s[<span class="num">0</span>]    <span class="comment"># 'P'</span>
+s[<span class="num">2</span>]    <span class="comment"># 't'</span>
+s[-<span class="num">1</span>]   <span class="comment"># 'n' — last character</span>
+s[-<span class="num">2</span>]   <span class="comment"># 'o' — second to last</span>
+
+<span class="comment"># Slicing: s[start:stop:step]  (stop is exclusive)</span>
+s[<span class="num">0</span>:<span class="num">3</span>]   <span class="comment"># 'Pyt'</span>
+s[<span class="num">2</span>:<span class="num">5</span>]   <span class="comment"># 'tho'</span>
+s[<span class="num">2</span>:]    <span class="comment"># 'thon'  — from index 2 to end</span>
+s[:<span class="num">3</span>]    <span class="comment"># 'Pyt'   — from start to index 3</span>
+s[:]     <span class="comment"># 'Python' — full copy</span>
+s[::<span class="num">2</span>]   <span class="comment"># 'Pto'   — every 2nd character</span>
+s[::-<span class="num">1</span>]  <span class="comment"># 'nohtyP' — reversed!</span>
+
+<span class="comment"># Slicing never raises IndexError</span>
+s[<span class="num">100</span>:<span class="num">200</span>]   <span class="comment"># '' — empty, not an error</span></code></pre>
+
+  <div class="callout info">
+    <strong>💡 Reverse a string easily</strong>
+    <code>s[::-1]</code> is the idiomatic way to reverse a string in Python. It reads "step through with step -1", starting from end to beginning.
+  </div>
+
+  <h2 id="methods">3. Essential String Methods</h2>
+  <p>Strings have <em>lots</em> of built-in methods. None of them modify the original — they always return a new string (strings are immutable).</p>
+
+  <h3>Case Methods</h3>
+  <pre><code>s = <span class="str">"hello World"</span>
+
+s.upper()        <span class="comment"># "HELLO WORLD"</span>
+s.lower()        <span class="comment"># "hello world"</span>
+s.title()        <span class="comment"># "Hello World"</span>
+s.capitalize()   <span class="comment"># "Hello world" (only first letter)</span>
+s.swapcase()     <span class="comment"># "HELLO wORLD"</span></code></pre>
+
+  <h3>Search & Check</h3>
+  <pre><code>s = <span class="str">"The quick brown fox"</span>
+
+<span class="comment"># Find position</span>
+s.find(<span class="str">"quick"</span>)      <span class="comment"># 4 — index of first match</span>
+s.find(<span class="str">"cat"</span>)        <span class="comment"># -1 — not found</span>
+s.index(<span class="str">"quick"</span>)     <span class="comment"># 4 — like find() but raises ValueError if not found</span>
+s.rfind(<span class="str">"o"</span>)         <span class="comment"># 17 — last occurrence</span>
+s.count(<span class="str">"o"</span>)         <span class="comment"># 2 — count occurrences</span>
+
+<span class="comment"># Check content</span>
+s.startswith(<span class="str">"The"</span>)   <span class="comment"># True</span>
+s.endswith(<span class="str">"fox"</span>)     <span class="comment"># True</span>
+<span class="str">"quick"</span> <span class="kw">in</span> s          <span class="comment"># True — membership test</span>
+
+<span class="comment"># Check character types</span>
+<span class="str">"hello"</span>.isalpha()    <span class="comment"># True — all letters</span>
+<span class="str">"123"</span>.isdigit()      <span class="comment"># True — all digits</span>
+<span class="str">"abc123"</span>.isalnum()   <span class="comment"># True — letters and digits</span>
+<span class="str">"   "</span>.isspace()      <span class="comment"># True — all whitespace</span>
+<span class="str">"HELLO"</span>.isupper()    <span class="comment"># True</span>
+<span class="str">"hello"</span>.islower()    <span class="comment"># True</span></code></pre>
+
+  <h3>Modify / Clean</h3>
+  <pre><code><span class="comment"># Strip whitespace</span>
+<span class="str">"  hello  "</span>.strip()    <span class="comment"># "hello"</span>
+<span class="str">"  hello  "</span>.lstrip()   <span class="comment"># "hello  "</span>
+<span class="str">"  hello  "</span>.rstrip()   <span class="comment"># "  hello"</span>
+<span class="str">"...hello..."</span>.strip(<span class="str">"."</span>)  <span class="comment"># "hello" — strip specific chars</span>
+
+<span class="comment"># Replace</span>
+<span class="str">"hello world"</span>.replace(<span class="str">"world"</span>, <span class="str">"Python"</span>)   <span class="comment"># "hello Python"</span>
+<span class="str">"aabbcc"</span>.replace(<span class="str">"a"</span>, <span class="str">"x"</span>, <span class="num">1</span>)              <span class="comment"># "xabbcc" — max 1 replacement</span>
+
+<span class="comment"># Split and join</span>
+<span class="str">"a,b,c"</span>.split(<span class="str">","</span>)      <span class="comment"># ['a', 'b', 'c']</span>
+<span class="str">"hello world"</span>.split()   <span class="comment"># ['hello', 'world'] — splits on whitespace</span>
+<span class="str">"a\nb\nc"</span>.splitlines()  <span class="comment"># ['a', 'b', 'c']</span>
+
+<span class="comment"># join: the reverse of split</span>
+<span class="str">","</span>.join([<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>])    <span class="comment"># "a,b,c"</span>
+<span class="str">" "</span>.join([<span class="str">"hello"</span>, <span class="str">"world"</span>]) <span class="comment"># "hello world"</span>
+<span class="str">""</span>.join([<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>])     <span class="comment"># "abc"</span>
+
+<span class="comment"># Padding / alignment</span>
+<span class="str">"42"</span>.zfill(<span class="num">5</span>)         <span class="comment"># "00042"</span>
+<span class="str">"hi"</span>.ljust(<span class="num">10</span>)        <span class="comment"># "hi        "</span>
+<span class="str">"hi"</span>.rjust(<span class="num">10</span>)        <span class="comment"># "        hi"</span>
+<span class="str">"hi"</span>.center(<span class="num">10</span>)       <span class="comment"># "    hi    "</span>
+<span class="str">"hi"</span>.ljust(<span class="num">10</span>, <span class="str">"*"</span>)   <span class="comment"># "hi********"</span></code></pre>
+
+  <h2 id="formatting">4. String Formatting</h2>
+  <p>There are 3 ways to format strings in Python. Learn all three — you'll see them all in the wild.</p>
+
+  <h3>f-strings (Python 3.6+) — preferred</h3>
+  <pre><code>name = <span class="str">"Andi"</span>
+score = <span class="num">98.567</span>
+items = [<span class="str">"apple"</span>, <span class="str">"banana"</span>]
+
+<span class="fn">print</span>(<span class="str">f"Hello, </span>{name}<span class="str">!"</span>)
+<span class="fn">print</span>(<span class="str">f"Score: </span>{score:.2f}<span class="str">"</span>)         <span class="comment"># 98.57 (2 decimal places)</span>
+<span class="fn">print</span>(<span class="str">f"Items: </span>{<span class="fn">len</span>(items)}<span class="str">"</span>)        <span class="comment"># Expressions work!</span>
+<span class="fn">print</span>(<span class="str">f"Upper: </span>{name.upper()}<span class="str">"</span>)      <span class="comment"># Method calls work!</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="num">1_000_000</span>:,}<span class="str">"</span>)             <span class="comment"># 1,000,000</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="num">0.25</span>:.1%}<span class="str">"</span>)                <span class="comment"># 25.0%</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="str">'left'</span>:<&lt;10}<span class="str">"</span>)             <span class="comment"># "left      " (left-align, width 10)</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="str">'right'</span>:&gt;10}<span class="str">"</span>)             <span class="comment"># "     right"</span>
+<span class="fn">print</span>(<span class="str">f"</span>{score=}<span class="str">"</span>)                   <span class="comment"># score=98.567 (debug mode)</span></code></pre>
+
+  <h3>.format() — older but common in codebases</h3>
+  <pre><code><span class="str">"{} is {} years old"</span>.<span class="fn">format</span>(<span class="str">"Andi"</span>, <span class="num">25</span>)
+<span class="comment"># "Andi is 25 years old"</span>
+
+<span class="str">"{name} is {age}"</span>.<span class="fn">format</span>(name=<span class="str">"Andi"</span>, age=<span class="num">25</span>)
+<span class="comment"># "Andi is 25"</span>
+
+<span class="str">"{0:.2f}"</span>.<span class="fn">format</span>(<span class="num">3.14159</span>)
+<span class="comment"># "3.14"</span></code></pre>
+
+  <h3>% formatting — legacy, still in logging</h3>
+  <pre><code><span class="str">"Hello, %s! You are %d years old"</span> % (<span class="str">"Andi"</span>, <span class="num">25</span>)
+<span class="str">"Pi is %.2f"</span> % <span class="num">3.14159</span></code></pre>
+
+  <h2 id="immutability">5. Strings Are Immutable</h2>
+  <pre><code>s = <span class="str">"hello"</span>
+s[<span class="num">0</span>] = <span class="str">"H"</span>   <span class="comment"># TypeError: 'str' object does not support item assignment</span>
+
+<span class="comment"># Every string "modification" creates a NEW string</span>
+s = s.replace(<span class="str">"h"</span>, <span class="str">"H"</span>)   <span class="comment"># s is now a new string "Hello"</span>
+s = s.upper()               <span class="comment"># another new string "HELLO"</span>
+
+<span class="comment"># Building strings in a loop — use a list and join()</span>
+<span class="comment"># Bad — creates many intermediate strings</span>
+result = <span class="str">""</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1000</span>):
+    result += <span class="fn">str</span>(i)   <span class="comment"># ❌ O(n²) memory</span>
+
+<span class="comment"># Good — collect in list, join once</span>
+parts = []
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1000</span>):
+    parts.append(<span class="fn">str</span>(i))
+result = <span class="str">""</span>.join(parts)   <span class="comment"># ✅ O(n)</span></code></pre>
+
+  <h2 id="encoding">6. Encoding & Unicode</h2>
+  <pre><code><span class="comment"># Python 3 strings are Unicode by default</span>
+s = <span class="str">"こんにちは"</span>   <span class="comment"># Works fine</span>
+<span class="fn">len</span>(s)            <span class="comment"># 5 — character count, not bytes</span>
+
+<span class="comment"># Convert between str and bytes</span>
+s = <span class="str">"hello"</span>
+b = s.encode(<span class="str">"utf-8"</span>)    <span class="comment"># b'hello' — bytes</span>
+s2 = b.decode(<span class="str">"utf-8"</span>)   <span class="comment"># "hello" — back to str</span>
+
+<span class="comment"># ord() and chr()</span>
+<span class="fn">ord</span>(<span class="str">"A"</span>)    <span class="comment"># 65  — Unicode code point</span>
+<span class="fn">chr</span>(<span class="num">65</span>)    <span class="comment"># 'A' — back to character</span>
+<span class="fn">ord</span>(<span class="str">"a"</span>)    <span class="comment"># 97</span>
+
+<span class="comment"># Escape sequences</span>
+<span class="str">"\n"</span>     <span class="comment"># newline</span>
+<span class="str">"\t"</span>     <span class="comment"># tab</span>
+<span class="str">"\\"</span>     <span class="comment"># literal backslash</span>
+<span class="str">"\'"</span>     <span class="comment"># single quote</span>
+<span class="str">"\""</span>     <span class="comment"># double quote</span>
+<span class="str">"\u0041"</span> <span class="comment"># Unicode: 'A'</span></code></pre>
+
+  <h2 id="quickref">Quick Reference — All String Methods</h2>
+  <table>
+    <tr><th>Method</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>upper()</code></td><td>All uppercase</td><td><code>"hi".upper()</code> → "HI"</td></tr>
+    <tr><td><code>lower()</code></td><td>All lowercase</td><td><code>"HI".lower()</code> → "hi"</td></tr>
+    <tr><td><code>strip()</code></td><td>Remove whitespace</td><td><code>" hi ".strip()</code> → "hi"</td></tr>
+    <tr><td><code>split(sep)</code></td><td>Split into list</td><td><code>"a,b".split(",")</code> → ['a','b']</td></tr>
+    <tr><td><code>join(iterable)</code></td><td>Join list into str</td><td><code>",".join(["a","b"])</code> → "a,b"</td></tr>
+    <tr><td><code>replace(old,new)</code></td><td>Replace substring</td><td><code>"hi".replace("i","ello")</code> → "hello"</td></tr>
+    <tr><td><code>find(sub)</code></td><td>Index of first match</td><td><code>"hello".find("l")</code> → 2</td></tr>
+    <tr><td><code>count(sub)</code></td><td>Count occurrences</td><td><code>"hello".count("l")</code> → 2</td></tr>
+    <tr><td><code>startswith(s)</code></td><td>Begins with?</td><td><code>"hello".startswith("he")</code> → True</td></tr>
+    <tr><td><code>endswith(s)</code></td><td>Ends with?</td><td><code>"hello".endswith("lo")</code> → True</td></tr>
+    <tr><td><code>isdigit()</code></td><td>All digits?</td><td><code>"123".isdigit()</code> → True</td></tr>
+    <tr><td><code>isalpha()</code></td><td>All letters?</td><td><code>"abc".isalpha()</code> → True</td></tr>
+    <tr><td><code>zfill(n)</code></td><td>Zero-pad left</td><td><code>"5".zfill(3)</code> → "005"</td></tr>
+    <tr><td><code>center(n)</code></td><td>Center in width</td><td><code>"hi".center(6)</code> → "  hi  "</td></tr>
+    <tr><td><code>encode()</code></td><td>Str → bytes</td><td><code>"hi".encode("utf-8")</code> → b'hi'</td></tr>
+  </table>
+
+  <div class="callout success">
+    <strong>✅ Practical Pattern: Clean user input</strong>
+    <pre style="margin:8px 0 0"><code>raw = <span class="str">"  Hello World  \n"</span>
+clean = raw.strip().lower().replace(<span class="str">" "</span>, <span class="str">"_"</span>)
+<span class="fn">print</span>(clean)  <span class="comment"># "hello_world"</span></code></pre>
+  </div>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What does <code>"hello"[-3:]</code> return? Why?</li>
+      <li>How do you reverse a string in one line?</li>
+      <li>What's the difference between <code>find()</code> and <code>index()</code>?</li>
+      <li>Why is <code>"".join(list)</code> preferred over <code>+=</code> in a loop?</li>
+      <li>Given <code>"2024-01-15"</code>, extract the year, month, and day using slicing or split.</li>
+      <li>What does <code>"Python".center(10, "-")</code> return?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

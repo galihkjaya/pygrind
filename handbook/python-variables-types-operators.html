@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables, Types & Operators — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  .output { color: #94a3b8; }
+  .highlight { color: #f472b6; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .quiz ol { color: #94a3b8; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html" class="active">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Variables, Types & Operators</span></div>
+  <h1>Variables, Types & Operators</h1>
+  <p class="subtitle">Understand how Python stores data, what kinds of data exist, and how to work with them.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 Problems</div>
+
+  <div class="section-nav">
+    <a href="#variables">Variables</a>
+    <a href="#types">Data Types</a>
+    <a href="#type-casting">Type Casting</a>
+    <a href="#operators">Operators</a>
+    <a href="#expressions">Expressions</a>
+    <a href="#common-mistakes">Common Mistakes</a>
+    <a href="#quickref">Quick Reference</a>
+  </div>
+
+  <!-- ─── VARIABLES ─── -->
+  <h2 id="variables">1. Variables</h2>
+  <p>A variable is a <strong>named container</strong> for a value. In Python, you don't declare types — you just assign, and Python figures it out.</p>
+
+  <pre><code><span class="comment"># Assignment — just use the equals sign</span>
+name = <span class="str">"Andi"</span>
+age = <span class="num">25</span>
+height = <span class="num">1.75</span>
+is_student = <span class="kw">True</span>
+
+<span class="comment"># Multiple assignment at once</span>
+x, y, z = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>
+
+<span class="comment"># Same value to multiple variables</span>
+a = b = c = <span class="num">0</span>
+
+<span class="comment"># Swap without a temp variable (Python magic!)</span>
+x, y = y, x</code></pre>
+
+  <div class="concept-box">
+    <h3>How Python stores variables</h3>
+    <p>Python variables are not boxes containing values — they're <strong>labels pointing to objects in memory</strong>. When you write <code>x = 5</code>, Python creates an integer object <code>5</code> somewhere in memory, then makes the name <code>x</code> point to it.</p>
+    <pre><code>x = <span class="num">5</span>
+y = x        <span class="comment"># y points to the SAME object as x</span>
+<span class="fn">print</span>(<span class="fn">id</span>(x) == <span class="fn">id</span>(y))   <span class="comment"># True — same memory address</span>
+
+y = <span class="num">10</span>       <span class="comment"># Now y points to a new object</span>
+<span class="fn">print</span>(x)    <span class="comment"># Still 5 — x is unaffected</span></code></pre>
+  </div>
+
+  <h3>Naming Rules</h3>
+  <ul>
+    <li>Must start with a letter or underscore: <code>name</code>, <code>_hidden</code></li>
+    <li>Can contain letters, digits, underscores: <code>user_id_2</code></li>
+    <li>Case-sensitive: <code>Name</code> and <code>name</code> are different</li>
+    <li>Cannot be a keyword: <code>for</code>, <code>if</code>, <code>class</code>, etc.</li>
+  </ul>
+
+  <h3>Python Naming Conventions</h3>
+  <table>
+    <tr><th>What</th><th>Style</th><th>Example</th></tr>
+    <tr><td>Variables & functions</td><td>snake_case</td><td><code>user_name</code></td></tr>
+    <tr><td>Constants</td><td>UPPER_SNAKE</td><td><code>MAX_RETRIES</code></td></tr>
+    <tr><td>Classes</td><td>PascalCase</td><td><code>UserProfile</code></td></tr>
+    <tr><td>"Private" (convention)</td><td>_single_underscore</td><td><code>_internal</code></td></tr>
+    <tr><td>Name mangling (OOP)</td><td>__double_underscore</td><td><code>__secret</code></td></tr>
+  </table>
+
+  <!-- ─── DATA TYPES ─── -->
+  <h2 id="types">2. Data Types</h2>
+  <p>Python has a handful of built-in types you'll use constantly.</p>
+
+  <h3>The Core Types</h3>
+  <pre><code><span class="comment"># int — whole numbers, unlimited size</span>
+age = <span class="num">25</span>
+big = <span class="num">10_000_000</span>       <span class="comment"># underscores for readability</span>
+binary = <span class="num">0b1010</span>        <span class="comment"># binary literal → 10</span>
+hexval = <span class="num">0xFF</span>          <span class="comment"># hex literal → 255</span>
+
+<span class="comment"># float — decimal numbers (64-bit)</span>
+price = <span class="num">9.99</span>
+sci = <span class="num">1.5e3</span>            <span class="comment"># scientific → 1500.0</span>
+
+<span class="comment"># str — text, immutable, Unicode</span>
+greeting = <span class="str">"Hello"</span>
+multi = <span class="str">"""Line one
+Line two"""</span>
+
+<span class="comment"># bool — True or False (subclass of int!)</span>
+logged_in = <span class="kw">True</span>
+<span class="fn">print</span>(<span class="kw">True</span> + <span class="kw">True</span>)        <span class="comment"># 2 — bool is int under the hood</span>
+
+<span class="comment"># NoneType — the absence of a value</span>
+result = <span class="kw">None</span>
+<span class="fn">print</span>(<span class="fn">type</span>(result))       <span class="comment"># &lt;class 'NoneType'&gt;</span></code></pre>
+
+  <h3>Checking Types</h3>
+  <pre><code>x = <span class="num">42</span>
+
+<span class="comment"># type() returns the exact type</span>
+<span class="fn">print</span>(<span class="fn">type</span>(x))            <span class="comment"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(x) == <span class="builtin">int</span>)    <span class="comment"># True</span>
+
+<span class="comment"># isinstance() is better — handles inheritance</span>
+<span class="fn">print</span>(<span class="fn">isinstance</span>(x, <span class="builtin">int</span>))     <span class="comment"># True</span>
+<span class="fn">print</span>(<span class="fn">isinstance</span>(<span class="kw">True</span>, <span class="builtin">int</span>))  <span class="comment"># True — bool IS an int</span></code></pre>
+
+  <h3>Mutable vs Immutable</h3>
+  <div class="two-col">
+    <div class="concept-box">
+      <h3>Immutable ❌ (can't change)</h3>
+      <p>int, float, str, bool, tuple, frozenset</p>
+      <pre><code>s = <span class="str">"hello"</span>
+s[<span class="num">0</span>] = <span class="str">"H"</span>  <span class="comment"># TypeError!</span>
+<span class="comment"># Must create new string</span>
+s = <span class="str">"H"</span> + s[<span class="num">1</span>:]</code></pre>
+    </div>
+    <div class="concept-box">
+      <h3>Mutable ✅ (can change)</h3>
+      <p>list, dict, set, bytearray</p>
+      <pre><code>lst = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+lst[<span class="num">0</span>] = <span class="num">99</span>  <span class="comment"># Works!</span>
+<span class="fn">print</span>(lst)    <span class="comment"># [99, 2, 3]</span></code></pre>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Mutable Default Argument Trap</strong>
+    This is one of Python's most infamous gotchas. Never use mutable objects as default arguments — it will bite you later (covered more in Functions).
+  </div>
+
+  <!-- ─── TYPE CASTING ─── -->
+  <h2 id="type-casting">3. Type Casting</h2>
+  <p>Converting between types is called <strong>casting</strong> or <strong>type conversion</strong>. Python is strongly-typed — it won't silently mix types for you.</p>
+
+  <pre><code><span class="comment"># Explicit casting</span>
+<span class="builtin">int</span>(<span class="str">"42"</span>)         <span class="comment"># → 42</span>
+<span class="builtin">int</span>(<span class="num">3.9</span>)          <span class="comment"># → 3  (truncates, doesn't round!)</span>
+<span class="builtin">float</span>(<span class="str">"3.14"</span>)     <span class="comment"># → 3.14</span>
+<span class="builtin">float</span>(<span class="num">5</span>)          <span class="comment"># → 5.0</span>
+<span class="builtin">str</span>(<span class="num">100</span>)          <span class="comment"># → "100"</span>
+<span class="builtin">bool</span>(<span class="num">0</span>)           <span class="comment"># → False</span>
+<span class="builtin">bool</span>(<span class="str">""</span>)          <span class="comment"># → False</span>
+<span class="builtin">bool</span>(<span class="str">"hello"</span>)     <span class="comment"># → True</span>
+<span class="builtin">list</span>(<span class="str">"abc"</span>)       <span class="comment"># → ['a', 'b', 'c']</span>
+<span class="builtin">tuple</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])   <span class="comment"># → (1, 2, 3)</span></code></pre>
+
+  <h3>Truthy and Falsy Values</h3>
+  <p>Every Python value can be evaluated as <code>True</code> or <code>False</code> in a boolean context.</p>
+  <div class="two-col">
+    <div class="concept-box">
+      <h3>Falsy values</h3>
+      <pre><code><span class="kw">False</span>
+<span class="kw">None</span>
+<span class="num">0</span>      <span class="comment"># int zero</span>
+<span class="num">0.0</span>    <span class="comment"># float zero</span>
+<span class="str">""</span>     <span class="comment"># empty string</span>
+[]     <span class="comment"># empty list</span>
+{}     <span class="comment"># empty dict</span>
+()     <span class="comment"># empty tuple</span>
+<span class="builtin">set</span>()  <span class="comment"># empty set</span></code></pre>
+    </div>
+    <div class="concept-box">
+      <h3>Everything else is truthy</h3>
+      <pre><code><span class="kw">True</span>
+<span class="num">1</span>, <span class="num">-1</span>, <span class="num">42</span>
+<span class="str">"hello"</span>
+[<span class="num">0</span>]         <span class="comment"># list with 0 in it!</span>
+{<span class="str">"a"</span>: <span class="kw">None</span>} <span class="comment"># dict with None val</span>
+<span class="kw">lambda</span>: <span class="kw">None</span> <span class="comment"># any function</span></code></pre>
+    </div>
+  </div>
+
+  <pre><code><span class="comment"># Practical use: check if something "exists"</span>
+name = <span class="str">""</span>
+<span class="kw">if not</span> name:
+    <span class="fn">print</span>(<span class="str">"Name is empty"</span>)
+
+data = []
+<span class="kw">if</span> data:
+    <span class="fn">print</span>(<span class="str">"Has data"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Empty!"</span>)   <span class="comment"># This runs</span></code></pre>
+
+  <!-- ─── OPERATORS ─── -->
+  <h2 id="operators">4. Operators</h2>
+
+  <h3>Arithmetic Operators</h3>
+  <pre><code>a, b = <span class="num">17</span>, <span class="num">5</span>
+
+a + b    <span class="comment"># 22  — addition</span>
+a - b    <span class="comment"># 12  — subtraction</span>
+a * b    <span class="comment"># 85  — multiplication</span>
+a / b    <span class="comment"># 3.4 — division (ALWAYS returns float)</span>
+a // b   <span class="comment"># 3   — floor division (integer result)</span>
+a % b    <span class="comment"># 2   — modulo (remainder)</span>
+a ** b   <span class="comment"># 1419857 — exponentiation (17^5)</span></code></pre>
+
+  <div class="callout info">
+    <strong>💡 // and % are related</strong>
+    <code>a == (a // b) * b + (a % b)</code> always holds. So 17 == 3*5 + 2 ✓
+  </div>
+
+  <h3>Comparison Operators</h3>
+  <pre><code>x = <span class="num">10</span>
+
+x == <span class="num">10</span>   <span class="comment"># True  — equal value</span>
+x != <span class="num">10</span>   <span class="comment"># False — not equal</span>
+x > <span class="num">5</span>    <span class="comment"># True  — greater than</span>
+x < <span class="num">5</span>    <span class="comment"># False — less than</span>
+x >= <span class="num">10</span>  <span class="comment"># True  — greater or equal</span>
+x <= <span class="num">9</span>   <span class="comment"># False — less or equal</span>
+
+<span class="comment"># Chaining comparisons (very Pythonic)</span>
+<span class="num">1</span> < x < <span class="num">100</span>   <span class="comment"># True — equivalent to (1 < x) and (x < 100)</span>
+<span class="num">0</span> <= x <= <span class="num">10</span>  <span class="comment"># True</span></code></pre>
+
+  <h3>Logical Operators</h3>
+  <pre><code><span class="comment"># and, or, not</span>
+<span class="kw">True</span> <span class="kw">and</span> <span class="kw">False</span>   <span class="comment"># False — both must be True</span>
+<span class="kw">True</span> <span class="kw">or</span> <span class="kw">False</span>    <span class="comment"># True  — at least one True</span>
+<span class="kw">not</span> <span class="kw">True</span>         <span class="comment"># False</span>
+
+<span class="comment"># Short-circuit evaluation</span>
+<span class="comment"># 'and' stops at first False</span>
+<span class="kw">False</span> <span class="kw">and</span> <span class="fn">print</span>(<span class="str">"never runs"</span>)  <span class="comment"># print() not called</span>
+
+<span class="comment"># 'or' stops at first True</span>
+<span class="kw">True</span> <span class="kw">or</span> <span class="fn">print</span>(<span class="str">"never runs"</span>)   <span class="comment"># print() not called</span>
+
+<span class="comment"># 'and'/'or' return the actual value (not just True/False)</span>
+<span class="str">"hello"</span> <span class="kw">or</span> <span class="str">"world"</span>   <span class="comment"># "hello" — first truthy</span>
+<span class="str">""</span> <span class="kw">or</span> <span class="str">"default"</span>      <span class="comment"># "default" — first is falsy</span>
+<span class="num">0</span> <span class="kw">and</span> <span class="num">99</span>             <span class="comment"># 0 — short-circuits at 0</span>
+<span class="num">5</span> <span class="kw">and</span> <span class="num">99</span>             <span class="comment"># 99 — 5 is truthy, returns last</span></code></pre>
+
+  <div class="callout success">
+    <strong>✅ Practical pattern: default values</strong>
+    <pre style="margin:8px 0 0"><code>username = user_input <span class="kw">or</span> <span class="str">"Guest"</span>
+<span class="comment"># If user_input is empty/None, use "Guest"</span></code></pre>
+  </div>
+
+  <h3>Identity vs Equality</h3>
+  <pre><code><span class="comment"># == checks VALUE equality</span>
+<span class="comment"># is checks IDENTITY (same object in memory)</span>
+
+a = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+b = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+c = a
+
+a == b   <span class="comment"># True  — same values</span>
+a <span class="kw">is</span> b   <span class="comment"># False — different objects</span>
+a <span class="kw">is</span> c   <span class="comment"># True  — c points to same object as a</span>
+
+<span class="comment"># Always use 'is' for None, True, False</span>
+x = <span class="kw">None</span>
+<span class="kw">if</span> x <span class="kw">is</span> <span class="kw">None</span>:      <span class="comment"># ✅ correct</span>
+    <span class="fn">print</span>(<span class="str">"No value"</span>)
+<span class="kw">if</span> x == <span class="kw">None</span>:      <span class="comment"># ⚠️ works but not Pythonic</span>
+    <span class="fn">print</span>(<span class="str">"No value"</span>)</code></pre>
+
+  <h3>Membership Operators</h3>
+  <pre><code>fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"mango"</span>]
+
+<span class="str">"apple"</span> <span class="kw">in</span> fruits      <span class="comment"># True</span>
+<span class="str">"grape"</span> <span class="kw">not in</span> fruits   <span class="comment"># True</span>
+
+<span class="comment"># Also works on strings, dicts, sets</span>
+<span class="str">"ell"</span> <span class="kw">in</span> <span class="str">"hello"</span>        <span class="comment"># True — substring check</span>
+<span class="str">"key"</span> <span class="kw">in</span> {<span class="str">"key"</span>: <span class="num">1</span>}     <span class="comment"># True — checks dict KEYS</span></code></pre>
+
+  <h3>Bitwise Operators</h3>
+  <pre><code><span class="comment"># Less common but important for ML/AI (flags, masks)</span>
+a = <span class="num">0b1010</span>   <span class="comment"># 10</span>
+b = <span class="num">0b1100</span>   <span class="comment"># 12</span>
+
+a & b    <span class="comment"># 0b1000 = 8  — AND</span>
+a | b    <span class="comment"># 0b1110 = 14 — OR</span>
+a ^ b    <span class="comment"># 0b0110 = 6  — XOR</span>
+~a       <span class="comment"># -11         — NOT (bitwise complement)</span>
+a << <span class="num">1</span>   <span class="comment"># 20          — left shift (multiply by 2)</span>
+a >> <span class="num">1</span>   <span class="comment"># 5           — right shift (divide by 2)</span></code></pre>
+
+  <h3>Assignment Operators</h3>
+  <pre><code>x = <span class="num">10</span>
+x += <span class="num">5</span>    <span class="comment"># x = x + 5  → 15</span>
+x -= <span class="num">3</span>    <span class="comment"># x = x - 3  → 12</span>
+x *= <span class="num">2</span>    <span class="comment"># x = x * 2  → 24</span>
+x /= <span class="num">4</span>    <span class="comment"># x = x / 4  → 6.0 (float!)</span>
+x //= <span class="num">2</span>   <span class="comment"># x = x // 2 → 3.0</span>
+x **= <span class="num">3</span>   <span class="comment"># x = x ** 3 → 27.0</span>
+x %= <span class="num">5</span>    <span class="comment"># x = x % 5  → 2.0</span>
+
+<span class="comment"># Walrus operator := (Python 3.8+) — assign AND use in expression</span>
+data = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+<span class="kw">if</span> (n := <span class="fn">len</span>(data)) > <span class="num">3</span>:
+    <span class="fn">print</span>(<span class="str">f"List has </span>{n}<span class="str"> elements, too long"</span>)</code></pre>
+
+  <!-- ─── EXPRESSIONS ─── -->
+  <h2 id="expressions">5. Expressions</h2>
+
+  <h3>Operator Precedence (high to low)</h3>
+  <table>
+    <tr><th>Priority</th><th>Operators</th></tr>
+    <tr><td>1 (highest)</td><td><code>()</code> parentheses</td></tr>
+    <tr><td>2</td><td><code>**</code> exponentiation</td></tr>
+    <tr><td>3</td><td><code>+x -x ~x</code> unary</td></tr>
+    <tr><td>4</td><td><code>* / // %</code></td></tr>
+    <tr><td>5</td><td><code>+ -</code></td></tr>
+    <tr><td>6</td><td><code>&lt;&lt; &gt;&gt;</code> bitwise shift</td></tr>
+    <tr><td>7</td><td><code>&</code> bitwise AND</td></tr>
+    <tr><td>8</td><td><code>^</code> bitwise XOR</td></tr>
+    <tr><td>9</td><td><code>|</code> bitwise OR</td></tr>
+    <tr><td>10</td><td><code>== != &lt; &gt; &lt;= &gt;= is in not</code></td></tr>
+    <tr><td>11</td><td><code>not</code> logical NOT</td></tr>
+    <tr><td>12</td><td><code>and</code></td></tr>
+    <tr><td>13 (lowest)</td><td><code>or</code></td></tr>
+  </table>
+
+  <pre><code><span class="comment"># Common precedence surprises</span>
+<span class="num">2</span> + <span class="num">3</span> * <span class="num">4</span>        <span class="comment"># 14, not 20  (* before +)</span>
+<span class="num">2</span> ** <span class="num">3</span> ** <span class="num">2</span>      <span class="comment"># 512, not 64 (right-associative: 3**2=9, 2**9=512)</span>
+<span class="kw">not</span> <span class="kw">True</span> <span class="kw">or</span> <span class="kw">True</span> <span class="comment"># True (not binds tighter: (not True) or True)</span>
+
+<span class="comment"># When in doubt, use parentheses — clarity > cleverness</span>
+result = (<span class="num">2</span> + <span class="num">3</span>) * <span class="num">4</span>   <span class="comment"># Explicitly 20</span></code></pre>
+
+  <h3>f-strings (Essential!)</h3>
+  <pre><code>name = <span class="str">"Andi"</span>
+score = <span class="num">98.5</span>
+level = <span class="str">"Advanced"</span>
+
+<span class="comment"># Basic f-string</span>
+<span class="fn">print</span>(<span class="str">f"Hello, </span>{name}<span class="str">!"</span>)         <span class="comment"># Hello, Andi!</span>
+
+<span class="comment"># Expressions inside {}</span>
+<span class="fn">print</span>(<span class="str">f"2 + 2 = </span>{<span class="num">2</span> + <span class="num">2</span>}<span class="str">"</span>)        <span class="comment"># 2 + 2 = 4</span>
+
+<span class="comment"># Format specifiers</span>
+<span class="fn">print</span>(<span class="str">f"Score: </span>{score:.1f}<span class="str">%"</span>)     <span class="comment"># Score: 98.5%</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="num">1000000</span>:,}<span class="str">"</span>)            <span class="comment"># 1,000,000</span>
+<span class="fn">print</span>(<span class="str">f"</span>{score:.2f}<span class="str">"</span>)            <span class="comment"># 98.50</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="num">42</span>:05d}<span class="str">"</span>)             <span class="comment"># 00042 (zero-padded)</span>
+<span class="fn">print</span>(<span class="str">f"</span>{<span class="str">'hi'</span>:>10}<span class="str">"</span>)            <span class="comment">#         hi (right-aligned)</span>
+
+<span class="comment"># Debug with = (Python 3.8+)</span>
+x = <span class="num">42</span>
+<span class="fn">print</span>(<span class="str">f"</span>{x=}<span class="str">"</span>)                  <span class="comment"># x=42</span></code></pre>
+
+  <!-- ─── COMMON MISTAKES ─── -->
+  <h2 id="common-mistakes">6. Common Mistakes</h2>
+
+  <div class="callout danger">
+    <strong>❌ Using == for None</strong>
+    <pre style="margin:8px 0 0"><code><span class="comment"># Bad</span>
+<span class="kw">if</span> x == <span class="kw">None</span>: ...
+<span class="comment"># Good</span>
+<span class="kw">if</span> x <span class="kw">is</span> <span class="kw">None</span>: ...</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Integer division losing the decimal</strong>
+    <pre style="margin:8px 0 0"><code>result = <span class="num">7</span> / <span class="num">2</span>    <span class="comment"># 3.5 ✅ (Python 3)</span>
+result = <span class="num">7</span> // <span class="num">2</span>   <span class="comment"># 3   ⚠️ floor division</span></code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Float precision issues</strong>
+    <pre style="margin:8px 0 0"><code><span class="fn">print</span>(<span class="num">0.1</span> + <span class="num">0.2</span>)         <span class="comment"># 0.30000000000000004 !</span>
+<span class="fn">print</span>(<span class="num">0.1</span> + <span class="num">0.2</span> == <span class="num">0.3</span>)  <span class="comment"># False !</span>
+
+<span class="comment"># Fix: use round() or decimal module</span>
+<span class="fn">round</span>(<span class="num">0.1</span> + <span class="num">0.2</span>, <span class="num">10</span>) == <span class="num">0.3</span>   <span class="comment"># True</span>
+<span class="kw">from</span> decimal <span class="kw">import</span> Decimal
+Decimal(<span class="str">"0.1"</span>) + Decimal(<span class="str">"0.2"</span>)  <span class="comment"># Exact</span></code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ String + number concatenation</strong>
+    <pre style="margin:8px 0 0"><code>age = <span class="num">25</span>
+<span class="fn">print</span>(<span class="str">"Age: "</span> + age)       <span class="comment"># TypeError!</span>
+<span class="fn">print</span>(<span class="str">"Age: "</span> + <span class="builtin">str</span>(age))  <span class="comment"># ✅</span>
+<span class="fn">print</span>(<span class="str">f"Age: </span>{age}<span class="str">"</span>)        <span class="comment"># ✅ better</span></code></pre>
+  </div>
+
+  <!-- ─── QUICK REFERENCE ─── -->
+  <h2 id="quickref">Quick Reference</h2>
+  <table>
+    <tr><th>Task</th><th>Code</th></tr>
+    <tr><td>Check type</td><td><code>type(x)</code> or <code>isinstance(x, int)</code></td></tr>
+    <tr><td>Convert to int</td><td><code>int("42")</code></td></tr>
+    <tr><td>Convert to str</td><td><code>str(42)</code></td></tr>
+    <tr><td>Integer division</td><td><code>17 // 5</code> → 3</td></tr>
+    <tr><td>Remainder</td><td><code>17 % 5</code> → 2</td></tr>
+    <tr><td>Power</td><td><code>2 ** 10</code> → 1024</td></tr>
+    <tr><td>Swap</td><td><code>a, b = b, a</code></td></tr>
+    <tr><td>Format float</td><td><code>f"{val:.2f}"</code></td></tr>
+    <tr><td>Check None</td><td><code>x is None</code></td></tr>
+    <tr><td>Default value</td><td><code>val = x or "default"</code></td></tr>
+    <tr><td>Multiple assign</td><td><code>x, y, z = 1, 2, 3</code></td></tr>
+  </table>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>What is the difference between <code>/</code> and <code>//</code>?</li>
+      <li>Why does <code>0.1 + 0.2 == 0.3</code> return <code>False</code>?</li>
+      <li>What does <code>"" or "default"</code> return and why?</li>
+      <li>What's the difference between <code>==</code> and <code>is</code>? When should you use <code>is</code>?</li>
+      <li>What is <code>int(3.9)</code>? Does Python round or truncate?</li>
+      <li>Why is <code>2 ** 3 ** 2</code> equal to 512, not 64?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

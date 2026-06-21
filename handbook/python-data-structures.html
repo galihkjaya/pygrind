@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures — Python Handbook</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: #1a1d2e; border-right: 1px solid #2d3148; overflow-y: auto; padding: 24px 0; z-index: 100; }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #2d3148; margin-bottom: 16px; }
+  .sidebar-logo span { font-size: 13px; color: #7c85b3; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { color: #a78bfa; font-size: 16px; margin-top: 4px; }
+  .sidebar nav a { display: block; padding: 7px 20px; color: #94a3b8; font-size: 13.5px; text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: #a78bfa; background: #1e2235; border-left-color: #a78bfa; }
+  .main { margin-left: 260px; max-width: 900px; padding: 48px 48px 80px; }
+  .breadcrumb { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+  .breadcrumb span { color: #a78bfa; }
+  h1 { font-size: 36px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .subtitle { color: #7c85b3; font-size: 16px; margin-bottom: 40px; }
+  .tier-badge { display: inline-block; background: #1e2235; border: 1px solid #a78bfa; color: #a78bfa; font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 32px; }
+  h2 { font-size: 22px; font-weight: 600; color: #c4b5fd; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3148; }
+  h3 { font-size: 17px; font-weight: 600; color: #e2e8f0; margin: 28px 0 12px; }
+  p { color: #94a3b8; margin-bottom: 16px; }
+  .concept-box { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .concept-box h3 { margin-top: 0; color: #a78bfa; }
+  pre { background: #0d1117; border: 1px solid #2d3148; border-radius: 8px; padding: 20px; overflow-x: auto; margin: 16px 0; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13.5px; }
+  pre code { color: #e2e8f0; }
+  p code, li code { background: #1e2235; color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .comment { color: #6b7280; }
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .builtin { color: #34d399; }
+  ul, ol { color: #94a3b8; padding-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout.info { background: #1e2940; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #2a1f10; border-left: 4px solid #f59e0b; }
+  .callout.danger { background: #2a1010; border-left: 4px solid #ef4444; }
+  .callout.success { background: #102a1a; border-left: 4px solid #22c55e; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.info strong { color: #60a5fa; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.danger strong { color: #ef4444; }
+  .callout.success strong { color: #22c55e; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th { background: #1a1d2e; color: #a78bfa; text-align: left; padding: 10px 14px; border: 1px solid #2d3148; }
+  td { padding: 10px 14px; border: 1px solid #2d3148; color: #94a3b8; vertical-align: top; }
+  tr:hover td { background: #1a1d2e; }
+  .quiz { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 10px; padding: 24px; margin: 32px 0; }
+  .quiz h3 { color: #fbbf24; margin-top: 0; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .section-nav a { background: #1a1d2e; border: 1px solid #2d3148; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; }
+  .section-nav a:hover { border-color: #a78bfa; color: #a78bfa; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mini { font-size: 13px; color: #7c85b3; }
+  .kbd { font-family: 'JetBrains Mono', monospace; background:#0d1117; border:1px solid #2d3148; padding:2px 6px; border-radius:4px; color:#e2e8f0; }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 24px; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>Phase 1 · Foundation</span>
+    <h2>Python Basics</h2>
+  </div>
+  <nav>
+    <a href="python-variables-types-operators.html">1. Variables, Types & Operators</a>
+    <a href="python-control-flow.html">2. Control Flow</a>
+    <a href="python-functions.html">3. Functions</a>
+    <a href="python-strings.html">4. Strings & Methods</a>
+    <a href="python-data-structures.html" class="active">5. Data Structures</a>
+    <a href="python-comprehensions.html">6. Comprehensions</a>
+    <a href="python-file-io-exceptions.html">7. File I/O & Exceptions</a>
+    <a href="python-modules-packages.html">8. Modules & Packages</a>
+  </nav>
+</div>
+<div class="main">
+  <div class="breadcrumb">Phase 1 — Python Foundations › <span>Data Structures</span></div>
+  <h1>Data Structures</h1>
+  <p class="subtitle">Understand list, dict, set, and tuple deeply enough to model real program data, not just memorize syntax.</p>
+  <div class="tier-badge">Supports Tier 1 · Tier 2 · Tier 3 Problems</div>
+
+  <div class="section-nav">
+    <a href="#mental-model">Mental Model</a>
+    <a href="#lists">Lists</a>
+    <a href="#tuples">Tuples</a>
+    <a href="#dicts">Dicts</a>
+    <a href="#sets">Sets</a>
+    <a href="#choosing">Choosing</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#complexity">Complexity</a>
+    <a href="#mistakes">Mistakes</a>
+    <a href="#reference">Reference</a>
+  </div>
+
+  
+  <h2 id="mental-model">1. Mental Model: Containers for Different Jobs</h2>
+  <p>Data structures are how you organize values so your program can read, update, search, and transform them cleanly. In Python, the four foundation containers are <code>list</code>, <code>dict</code>, <code>set</code>, and <code>tuple</code>. They look simple, but they are the backbone of real Python work: API responses, ML datasets, config files, logs, features, and user state.</p>
+
+  <table>
+    <tr><th>Structure</th><th>Best mental model</th><th>Ordered?</th><th>Mutable?</th><th>Allows duplicates?</th><th>Typical use</th></tr>
+    <tr><td><code>list</code></td><td>A sequence of items</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Rows, tasks, scores, tokens</td></tr>
+    <tr><td><code>dict</code></td><td>Key → value mapping</td><td>Yes, insertion order</td><td>Yes</td><td>Keys unique</td><td>Records, JSON, lookup tables</td></tr>
+    <tr><td><code>set</code></td><td>A bag of unique values</td><td>No reliable position</td><td>Yes</td><td>No</td><td>Deduplication, membership tests</td></tr>
+    <tr><td><code>tuple</code></td><td>A fixed-size record</td><td>Yes</td><td>No</td><td>Yes</td><td>Coordinates, immutable pairs, function returns</td></tr>
+  </table>
+
+  <div class="callout info">
+    <strong>Core idea</strong>
+    Do not choose a data structure based on vibe. Choose based on the operation you need most: preserve order, update values, prevent duplicates, look up by key, or protect from mutation.
+  </div>
+
+  <h2 id="lists">2. Lists: Ordered, Mutable Sequences</h2>
+  <p>A <code>list</code> is the default container when you have multiple items in order. It is perfect when position matters, when duplicates are valid, and when you expect to add, remove, sort, or transform items.</p>
+
+  <pre><code># Creating lists
+scores = [80, 92, 75, 90]
+names = [&quot;Alya&quot;, &quot;Bima&quot;, &quot;Citra&quot;]
+mixed = [&quot;Python&quot;, 3.12, True]
+empty = []
+
+# Accessing by index, starting at 0
+first_score = scores[0]
+last_score = scores[-1]
+
+# Slicing: list[start:stop:step]
+top_two = scores[:2]
+without_first = scores[1:]
+reversed_scores = scores[::-1]
+
+print(first_score)
+print(top_two)
+print(reversed_scores)</code></pre>
+
+  <h3>List mutation: changing the same object</h3>
+  <pre><code>tasks = [&quot;read&quot;, &quot;practice&quot;]
+
+tasks.append(&quot;review&quot;)          # add to end
+tasks.insert(1, &quot;watch video&quot;)  # insert at index 1
+tasks.remove(&quot;read&quot;)            # remove by value
+done = tasks.pop()               # remove and return last item
+
+tasks[0] = &quot;solve problem&quot;       # replace item by index
+
+print(tasks)
+print(done)</code></pre>
+
+  <div class="concept-box">
+    <h3>When a list is the right choice</h3>
+    <ul>
+      <li>You care about order: first, second, last, sorted, reversed.</li>
+      <li>You need duplicates: two students can have the same score.</li>
+      <li>You will loop through all items and process them one by one.</li>
+      <li>You need a growable collection, like user inputs or scraped rows.</li>
+    </ul>
+  </div>
+
+  <h3>Common list patterns</h3>
+  <pre><code>numbers = [5, 2, 9, 1, 5]
+
+# Loop over values
+for number in numbers:
+    print(number)
+
+# Loop with index and value
+for index, number in enumerate(numbers):
+    print(index, number)
+
+# Sorting without changing original
+sorted_numbers = sorted(numbers)
+
+# Sorting in-place
+numbers.sort()
+
+# Check membership
+if 9 in numbers:
+    print(&quot;Found 9&quot;)
+
+# Aggregate operations
+print(len(numbers))
+print(sum(numbers))
+print(min(numbers), max(numbers))</code></pre>
+
+  <h3>Nested lists: tables and matrices</h3>
+  <p>A nested list is a list that contains other lists. In data work, this often represents a table, matrix, grid, or mini dataset.</p>
+  <pre><code>matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+]
+
+# Access row 1, column 2
+value = matrix[1][2]
+
+# Loop through every cell
+for row in matrix:
+    for cell in row:
+        print(cell)
+
+# Add a new row
+matrix.append([10, 11, 12])</code></pre>
+
+  <div class="callout danger">
+    <strong>❌ Trap: aliasing nested lists</strong>
+    <p>Do not create repeated inner lists with multiplication when you plan to mutate them. All rows may point to the same inner list. Python is not bugged, your reference is just doing parkour.</p>
+    <pre><code>bad_grid = [[0] * 3] * 3
+bad_grid[0][0] = 1
+print(bad_grid)  # All rows changed at column 0
+
+# Safer pattern
+good_grid = [[0 for _ in range(3)] for _ in range(3)]
+good_grid[0][0] = 1
+print(good_grid)</code></pre>
+  </div>
+
+  <h2 id="tuples">3. Tuples: Ordered, Immutable Records</h2>
+  <p>A <code>tuple</code> is like a list that should not be changed. Use it when the position has meaning and the shape of the data is fixed: coordinate pairs, RGB colors, database rows, or multiple return values.</p>
+
+  <pre><code>point = (3, 4)
+name_age = (&quot;Nadia&quot;, 21)
+empty_tuple = ()
+single_item_tuple = (&quot;Python&quot;,)  # comma matters
+
+x = point[0]
+y = point[1]
+
+# Tuple unpacking
+name, age = name_age
+
+print(x, y)
+print(name, age)</code></pre>
+
+  <h3>Tuple unpacking makes code cleaner</h3>
+  <pre><code>student = (&quot;Raka&quot;, 88, &quot;Data Science&quot;)
+name, score, major = student
+
+print(f&quot;{name} scored {score} in {major}&quot;)
+
+# Swap values without temporary variable
+a = 10
+b = 20
+a, b = b, a
+
+# Returning multiple values from a function
+def summarize(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+lowest, highest, average = summarize([10, 20, 30])</code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️ Immutable does not always mean deeply immutable</strong>
+    A tuple cannot replace its items, but if an item inside it is mutable, that inner object can still change.
+  </div>
+
+  <pre><code>data = ([1, 2], &quot;label&quot;)
+# data[0] = [9, 9]     # TypeError: tuple item assignment
+
+data[0].append(3)      # Allowed, because the inner list is mutable
+print(data)</code></pre>
+
+  <h2 id="dicts">4. Dictionaries: Key → Value Lookup</h2>
+  <p>A <code>dict</code> stores pairs of keys and values. This is the structure you use when you want to ask: “given this key, what is the value?” Dicts are everywhere in real Python because JSON objects become dicts.</p>
+
+  <pre><code>student = {
+    &quot;name&quot;: &quot;Dewi&quot;,
+    &quot;major&quot;: &quot;Statistics&quot;,
+    &quot;score&quot;: 91,
+    &quot;is_active&quot;: True,
+}
+
+# Access by key
+print(student[&quot;name&quot;])
+
+# Safer access when key may not exist
+print(student.get(&quot;email&quot;))
+print(student.get(&quot;email&quot;, &quot;not provided&quot;))
+
+# Add or update
+student[&quot;score&quot;] = 95
+student[&quot;email&quot;] = &quot;dewi@example.com&quot;
+
+# Remove
+removed_email = student.pop(&quot;email&quot;)
+
+print(student)</code></pre>
+
+  <h3>Looping through dictionaries</h3>
+  <pre><code>profile = {
+    &quot;username&quot;: &quot;galih15&quot;,
+    &quot;level&quot;: &quot;beginner&quot;,
+    &quot;goal&quot;: &quot;learn backend&quot;,
+}
+
+for key in profile:
+    print(key)
+
+for value in profile.values():
+    print(value)
+
+for key, value in profile.items():
+    print(f&quot;{key}: {value}&quot;)</code></pre>
+
+  <h3>Counting and grouping with dict</h3>
+  <p>One of the most useful beginner-to-intermediate patterns is using a dict as a counter or grouping tool.</p>
+  <pre><code>words = [&quot;python&quot;, &quot;data&quot;, &quot;python&quot;, &quot;ai&quot;, &quot;data&quot;, &quot;python&quot;]
+counts = {}
+
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+
+print(counts)
+
+# Group scores by class
+rows = [
+    {&quot;class&quot;: &quot;A&quot;, &quot;score&quot;: 80},
+    {&quot;class&quot;: &quot;B&quot;, &quot;score&quot;: 75},
+    {&quot;class&quot;: &quot;A&quot;, &quot;score&quot;: 90},
+]
+
+groups = {}
+for row in rows:
+    class_name = row[&quot;class&quot;]
+    groups.setdefault(class_name, []).append(row[&quot;score&quot;])
+
+print(groups)</code></pre>
+
+  <div class="callout info">
+    <strong>dict keys must be hashable</strong>
+    Strings, numbers, booleans, and tuples of immutable values can be keys. Lists and dicts cannot be keys because they can change.
+  </div>
+
+  <h2 id="sets">5. Sets: Unique Values and Fast Membership</h2>
+  <p>A <code>set</code> stores unique values. Use it when you care whether something exists, not where it is located. Membership checks are usually much faster than checking inside a long list.</p>
+
+  <pre><code>tags = {&quot;python&quot;, &quot;ml&quot;, &quot;data&quot;, &quot;python&quot;}
+print(tags)  # duplicate removed
+
+# Create empty set
+empty_set = set()
+
+# Add and remove
+tags.add(&quot;backend&quot;)
+tags.discard(&quot;ml&quot;)      # no error if missing
+# tags.remove(&quot;ml&quot;)     # error if missing
+
+# Membership
+if &quot;python&quot; in tags:
+    print(&quot;Python tag exists&quot;)</code></pre>
+
+  <h3>Set operations</h3>
+  <pre><code>frontend = {&quot;html&quot;, &quot;css&quot;, &quot;javascript&quot;, &quot;react&quot;}
+backend = {&quot;python&quot;, &quot;sql&quot;, &quot;javascript&quot;, &quot;api&quot;}
+
+print(frontend | backend)  # union: everything
+print(frontend &amp; backend)  # intersection: common items
+print(frontend - backend)  # difference: frontend only
+print(frontend ^ backend)  # symmetric difference: not shared</code></pre>
+
+  <h3>Practical use: deduplicate while keeping order</h3>
+  <p>A normal set removes duplicates but does not preserve meaningful position. To deduplicate a list while keeping the first appearance, combine a set with a list.</p>
+  <pre><code>names = [&quot;Ayu&quot;, &quot;Bima&quot;, &quot;Ayu&quot;, &quot;Citra&quot;, &quot;Bima&quot;]
+seen = set()
+unique_names = []
+
+for name in names:
+    if name not in seen:
+        unique_names.append(name)
+        seen.add(name)
+
+print(unique_names)</code></pre>
+
+  <h2 id="choosing">6. Choosing the Right Structure</h2>
+  <table>
+    <tr><th>Question</th><th>Use</th><th>Example</th></tr>
+    <tr><td>Do I need ordered items?</td><td><code>list</code> or <code>tuple</code></td><td>Scores by attempt</td></tr>
+    <tr><td>Do I need key-based lookup?</td><td><code>dict</code></td><td>User profile by field name</td></tr>
+    <tr><td>Do I need unique values?</td><td><code>set</code></td><td>Unique tags or IDs</td></tr>
+    <tr><td>Should the record not change?</td><td><code>tuple</code></td><td>Latitude/longitude pair</td></tr>
+    <tr><td>Do I need JSON-like nested data?</td><td><code>dict</code> + <code>list</code></td><td>API response</td></tr>
+  </table>
+
+  <h2 id="patterns">7. Real-World Patterns</h2>
+  <h3>Pattern A: list of dicts for tabular records</h3>
+  <pre><code>students = [
+    {&quot;name&quot;: &quot;Alya&quot;, &quot;score&quot;: 88, &quot;passed&quot;: True},
+    {&quot;name&quot;: &quot;Bima&quot;, &quot;score&quot;: 74, &quot;passed&quot;: True},
+    {&quot;name&quot;: &quot;Citra&quot;, &quot;score&quot;: 59, &quot;passed&quot;: False},
+]
+
+passed_names = []
+for student in students:
+    if student[&quot;passed&quot;]:
+        passed_names.append(student[&quot;name&quot;])
+
+print(passed_names)</code></pre>
+
+  <h3>Pattern B: dict of lists for grouping</h3>
+  <pre><code>transactions = [
+    {&quot;category&quot;: &quot;food&quot;, &quot;amount&quot;: 25000},
+    {&quot;category&quot;: &quot;transport&quot;, &quot;amount&quot;: 12000},
+    {&quot;category&quot;: &quot;food&quot;, &quot;amount&quot;: 18000},
+]
+
+by_category = {}
+for trx in transactions:
+    category = trx[&quot;category&quot;]
+    by_category.setdefault(category, []).append(trx[&quot;amount&quot;])
+
+print(by_category)</code></pre>
+
+  <h3>Pattern C: set for validation</h3>
+  <pre><code>allowed_roles = {&quot;admin&quot;, &quot;editor&quot;, &quot;viewer&quot;}
+user_role = &quot;editor&quot;
+
+if user_role not in allowed_roles:
+    print(&quot;Invalid role&quot;)
+else:
+    print(&quot;Role accepted&quot;)</code></pre>
+
+  <h2 id="complexity">8. Practical Complexity Cheat Sheet</h2>
+  <p>You do not need to memorize every Big-O formula yet, but you should know the common intuition. This helps you avoid painfully slow code when data gets large.</p>
+  <table>
+    <tr><th>Operation</th><th>List</th><th>Dict</th><th>Set</th><th>Tuple</th></tr>
+    <tr><td>Access by index</td><td>Fast</td><td>Not index-based</td><td>Not index-based</td><td>Fast</td></tr>
+    <tr><td>Search membership</td><td>Can be slow for large lists</td><td>Fast by key</td><td>Fast</td><td>Can be slow</td></tr>
+    <tr><td>Add item</td><td>Fast at end</td><td>Fast by key</td><td>Fast</td><td>Cannot mutate</td></tr>
+    <tr><td>Remove item</td><td>Can require shifting/search</td><td>Fast by key</td><td>Fast by value</td><td>Cannot mutate</td></tr>
+  </table>
+
+  <h2 id="mistakes">9. Common Mistakes</h2>
+  <div class="callout danger">
+    <strong>❌ Using a list when you need lookup by ID</strong>
+    <p>If you keep searching a list to find a user by ID, a dict is probably cleaner and faster.</p>
+    <pre><code>users = [
+    {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alya&quot;},
+    {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bima&quot;},
+]
+
+# Better lookup structure
+users_by_id = {
+    1: {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alya&quot;},
+    2: {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bima&quot;},
+}
+
+print(users_by_id[2])</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <strong>❌ Confusing copy and alias</strong>
+    <pre><code>a = [1, 2, 3]
+b = a          # alias: same list object
+b.append(4)
+print(a)       # also changed
+
+c = a.copy()   # shallow copy: new outer list
+c.append(5)
+print(a)
+print(c)</code></pre>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Updating a dict while looping over it</strong>
+    <p>Changing dict size while iterating over it can raise errors. Loop over <code>list(my_dict)</code> or create a new dict.</p>
+    <pre><code>scores = {&quot;Alya&quot;: 90, &quot;Bima&quot;: 45, &quot;Citra&quot;: 70}
+
+for name in list(scores):
+    if scores[name] &lt; 50:
+        del scores[name]
+
+print(scores)</code></pre>
+  </div>
+
+  <h2 id="reference">10. Quick Reference</h2>
+  <table>
+    <tr><th>Goal</th><th>Code</th></tr>
+    <tr><td>Create list</td><td><code>items = []</code></td></tr>
+    <tr><td>Add to list</td><td><code>items.append(x)</code></td></tr>
+    <tr><td>Create tuple</td><td><code>point = (x, y)</code></td></tr>
+    <tr><td>Create dict</td><td><code>user = {"name": "Ayu"}</code></td></tr>
+    <tr><td>Safe dict lookup</td><td><code>user.get("email", "none")</code></td></tr>
+    <tr><td>Loop dict pairs</td><td><code>for k, v in data.items():</code></td></tr>
+    <tr><td>Create set</td><td><code>tags = set()</code> or <code>{"a", "b"}</code></td></tr>
+    <tr><td>Unique values</td><td><code>unique = set(values)</code></td></tr>
+  </table>
+
+  <div class="quiz">
+    <h3>🧠 Check Your Understanding</h3>
+    <ol>
+      <li>When should you prefer a <code>dict</code> over a <code>list</code>?</li>
+      <li>Why is <code>{}</code> an empty dict, not an empty set?</li>
+      <li>What is the difference between <code>remove</code> and <code>discard</code> on a set?</li>
+      <li>Why can a tuple be useful even though it cannot be changed?</li>
+      <li>How would you represent a table of students where every student has name, score, and class?</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

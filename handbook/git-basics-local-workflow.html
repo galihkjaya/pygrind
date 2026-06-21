@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Basics &amp; Local Workflow — Handbook</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1117;color:#e2e8f0;line-height:1.7}.sidebar{position:fixed;top:0;left:0;width:300px;height:100vh;background:#1a1d2e;border-right:1px solid #2d3148;overflow-y:auto;padding:24px 0;z-index:100}.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid #2d3148;margin-bottom:16px}.sidebar-logo span{font-size:12px;color:#7c85b3;text-transform:uppercase;letter-spacing:1px}.sidebar-logo h2{color:#a78bfa;font-size:16px;margin-top:4px}.sidebar nav a{display:block;padding:7px 20px;color:#94a3b8;font-size:13px;text-decoration:none;border-left:3px solid transparent;transition:all .2s;line-height:1.45}.sidebar nav a:hover,.sidebar nav a.active{color:#a78bfa;background:#1e2235;border-left-color:#a78bfa}.main{margin-left:300px;max-width:1020px;padding:48px 52px 90px}.breadcrumb{font-size:12px;color:#64748b;margin-bottom:8px}.breadcrumb span{color:#a78bfa}h1{font-size:36px;font-weight:750;color:#f1f5f9;margin-bottom:8px;line-height:1.2}.subtitle{color:#7c85b3;font-size:16px;margin-bottom:38px}.tier-badge{display:inline-block;background:#1e2235;border:1px solid #a78bfa;color:#a78bfa;font-size:11px;padding:2px 10px;border-radius:20px;margin-bottom:32px;text-transform:uppercase;letter-spacing:.5px}h2{font-size:22px;font-weight:650;color:#c4b5fd;margin:48px 0 16px;padding-bottom:8px;border-bottom:1px solid #2d3148}h3{font-size:17px;font-weight:650;color:#e2e8f0;margin:28px 0 12px}p{color:#94a3b8;margin-bottom:16px}.concept-box{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:20px 24px;margin:20px 0}.concept-box h3{margin-top:0;color:#a78bfa}.concept-box p:last-child,.callout p:last-child{margin-bottom:0}pre{background:#0d1117;border:1px solid #2d3148;border-radius:8px;padding:20px;overflow-x:auto;margin:16px 0}code{font-family:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13.5px}pre code{color:#e2e8f0}p code,li code,td code{background:#1e2235;color:#c084fc;padding:2px 6px;border-radius:4px;font-size:13px}ul,ol{color:#94a3b8;padding-left:24px;margin-bottom:16px}li{margin-bottom:6px}.callout{border-radius:8px;padding:16px 20px;margin:20px 0}.callout.info{background:#1e2940;border-left:4px solid #3b82f6}.callout.warn{background:#2a1f10;border-left:4px solid #f59e0b}.callout.danger{background:#2a1010;border-left:4px solid #ef4444}.callout.success{background:#102a1a;border-left:4px solid #22c55e}.callout strong{display:block;margin-bottom:4px}.callout.info strong{color:#60a5fa}.callout.warn strong{color:#f59e0b}.callout.danger strong{color:#ef4444}.callout.success strong{color:#22c55e}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}th{background:#1a1d2e;color:#a78bfa;text-align:left;padding:10px 14px;border:1px solid #2d3148}td{padding:10px 14px;border:1px solid #2d3148;color:#94a3b8;vertical-align:top}tr:hover td{background:#1a1d2e}.quiz{background:#1a1d2e;border:1px solid #2d3148;border-radius:10px;padding:24px;margin:32px 0}.quiz h3{color:#fbbf24;margin-top:0}.section-nav{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}.section-nav a{background:#1a1d2e;border:1px solid #2d3148;color:#94a3b8;padding:6px 14px;border-radius:20px;font-size:13px;text-decoration:none;transition:all .2s}.section-nav a:hover{border-color:#a78bfa;color:#a78bfa}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.mini{color:#7c85b3;font-size:13px}@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:24px}.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar"><div class="sidebar-logo"><span>Git &amp; GitHub Workflow</span><h2>Backend & AI Engineering</h2></div><nav><a href="git-basics-local-workflow.html" class="active">1. Git Basics &amp; Local Workflow</a><a href="git-remote-github-workflow.html">2. Remote Workflow with GitHub</a><a href="git-branching-merging-conflicts.html">3. Branching, Merging &amp; Conflict Resolution</a><a href="git-rebase-undo-history.html">4. Rebase, Undo &amp; History Management</a><a href="github-collaboration-workflow.html">5. GitHub Collaboration Workflow</a></nav></div>
+<div class="main">
+  <div class="breadcrumb">Git &amp; GitHub Workflow › <span>Git Basics &amp; Local Workflow</span></div>
+  <h1>Git Basics &amp; Local Workflow</h1>
+  <p class="subtitle">Track changes locally with init, add, commit, log, and diff.</p>
+  <div class="tier-badge">Git Core</div>
+  <div class="section-nav"><a href="#overview">Overview</a><a href="#mental">Mental model</a><a href="#concepts">Concepts</a><a href="#hands-on">Hands-on</a><a href="#workflow">Workflow</a><a href="#mistakes">Mistakes</a><a href="#reference">Quick ref</a><a href="#practice">Practice</a></div>
+  
+    <h2 id="overview">1. Overview</h2>
+    <p>Track changes locally with init, add, commit, log, and diff. This handbook focuses on practical understanding first: what the tool does, why it exists, how to write the syntax, and how to avoid mistakes that usually waste hours.</p><p>Read it like a field guide. You do not need to memorize every command on first pass. You need to understand the shape of the workflow and know which pattern to reach for when a real project asks for it.</p>
+    <h2 id="mental">2. Mental Model</h2>
+    <div class="concept-box"><h3>How to think about this topic</h3><p>The core mental model: every command or construct has an input, a transformation, and an output. Strong engineers do not just copy syntax. They predict what should happen, run the smallest possible check, then scale the pattern carefully.</p></div>
+    <div class="callout info"><strong>Learning target</strong><p>After this page, you should be able to explain the purpose of the topic, write the main syntax from scratch, debug common failure modes, and apply it inside a small backend or AI-engineering project.</p></div>
+    <h2 id="concepts">3. Core Concepts</h2>
+    <table><tr><th>Concept</th><th>Meaning</th><th>Pattern</th></tr><tr><td><code>repository</code></td><td>Tracked project</td><td><code>.git</code></td></tr><tr><td><code>working tree</code></td><td>Current files</td><td><code>git status</code></td></tr><tr><td><code>staging area</code></td><td>Prepared changes</td><td><code>git add</code></td></tr><tr><td><code>commit</code></td><td>Snapshot of changes</td><td><code>git commit</code></td></tr><tr><td><code>log</code></td><td>History view</td><td><code>git log</code></td></tr><tr><td><code>diff</code></td><td>See changes</td><td><code>git diff</code></td></tr></table>
+    <h2 id="hands-on">4. Hands-on Code</h2>
+    <h3>Start tracking</h3><p>Initialize or clone before working.</p><pre><code>git init
+git status
+git add README.md
+git commit -m &quot;Initial commit</code></pre><h3>Inspect changes</h3><p>Always inspect before committing. Future you deserves mercy.</p><pre><code>git status
+git diff
+git diff --staged</code></pre><h3>Read history</h3><p>Logs explain how the project changed.</p><pre><code>git log --oneline --graph --decorate</code></pre>
+    <h2 id="workflow">5. Practical Workflow</h2>
+    <ol><li>Check status often.</li><li>Make small focused changes.</li><li>Review diff before staging.</li><li>Stage related files.</li><li>Write meaningful commit messages.</li><li>Use log to understand history.</li></ol>
+    <h2 id="mistakes">6. Common Mistakes</h2>
+    <div class="callout danger"><strong>Avoid these traps</strong><ul><li>Committing huge unrelated changes.</li><li>Not reading diff before commit.</li><li>Writing messages like update/fix/stuff.</li><li>Committing generated files or secrets.</li><li>Panicking before checking status.</li></ul></div>
+    <h2 id="reference">7. Quick Reference</h2>
+    <table><tr><th>Need</th><th>Pattern</th></tr><tr><td>Init</td><td><code>git init</code></td></tr><tr><td>Status</td><td><code>git status</code></td></tr><tr><td>Stage</td><td><code>git add file.py</code></td></tr><tr><td>Commit</td><td><code>git commit -m &quot;message&quot;</code></td></tr><tr><td>Diff</td><td><code>git diff</code></td></tr><tr><td>Staged diff</td><td><code>git diff --staged</code></td></tr><tr><td>Log</td><td><code>git log --oneline</code></td></tr></table>
+    <h2 id="practice">8. Practice Drills</h2>
+    <div class="concept-box"><h3>Mini project</h3><p>Create a repository, make three small commits, and write messages that explain why each change exists.</p></div>
+    <div class="quiz"><h3>Check Your Understanding</h3><ol><li>What is the staging area?</li><li>Why review diff before commit?</li><li>What makes a good commit message?</li><li>How do you view history?</li></ol></div>
+    
+</div>
+</body>
+</html>
