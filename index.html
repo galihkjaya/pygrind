@@ -11,6 +11,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      ;(() => {
+        const redirect = sessionStorage.getItem('codelearn.redirect')
+        if (redirect) {
+          sessionStorage.removeItem('codelearn.redirect')
+          history.replaceState(null, '', redirect)
+        }
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

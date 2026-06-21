@@ -2,9 +2,11 @@
   "name": "code-learn",
   "version": "1.0.0",
   "description": "A client-side coding learning platform for AI/ML and backend engineers. No server. User brings their own API key (Groq or Gemini). Everything runs in the browser.",
+  "homepage": "https://galihkjaya.github.io/code-learn",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/copy-handbook.mjs",
+    "deploy": "npm run build && gh-pages -d dist",
     "preview": "vite preview"
   },
   "keywords": [],
